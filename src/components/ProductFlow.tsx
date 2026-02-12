@@ -142,7 +142,7 @@ const nodes: Node[] = [
   {
     id: "memovee-web",
     position: { x: 1130, y: 32 },
-    data: { label: "Web" },
+    data: { label: "Chat" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
     style: { ...mainNodeStyle, width: 120 },
