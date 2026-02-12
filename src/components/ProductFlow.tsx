@@ -98,6 +98,21 @@ const appNodeStyle = {
   textAlign: "center" as const,
 };
 
+const groupNodeStyle = {
+  border: "1px solid color-mix(in oklab, var(--color-info) 45%, transparent)",
+  borderRadius: "1rem",
+  background:
+    "color-mix(in oklab, var(--color-info) 8%, var(--color-base-100))",
+};
+
+const appGroupNodeStyle = {
+  border:
+    "1px solid color-mix(in oklab, var(--color-secondary) 40%, transparent)",
+  borderRadius: "1rem",
+  background:
+    "color-mix(in oklab, var(--color-secondary) 8%, var(--color-base-100))",
+};
+
 const nodes: Node[] = [
   {
     id: "opsmaru",
@@ -108,59 +123,92 @@ const nodes: Node[] = [
     style: { ...mainNodeStyle, width: 220 },
   },
   {
+    id: "intelligence",
+    position: { x: 380, y: 52 },
+    data: { label: "Intelligence" },
+    type: "group",
+    style: { ...groupNodeStyle, width: 320, height: 292, padding: "0.75rem" },
+  },
+  {
     id: "kritama",
-    position: { x: 430, y: 96 },
+    position: { x: 50, y: 44 },
     data: { label: "Memovee's Kritama" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "intelligence",
+    extent: "parent",
     style: { ...mainNodeStyle, width: 220 },
   },
   {
+    id: "application",
+    position: { x: 786, y: 12 },
+    data: { label: "Application" },
+    type: "group",
+    style: {
+      ...appGroupNodeStyle,
+      width: 494,
+      height: 348,
+      padding: "0.75rem",
+    },
+  },
+  {
     id: "memovee",
-    position: { x: 836, y: 96 },
+    position: { x: 50, y: 84 },
     data: { label: "Memovee" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "application",
+    extent: "parent",
     style: { ...mainNodeStyle, width: 220 },
   },
   {
     id: "your-kritama",
-    position: { x: 430, y: 256 },
+    position: { x: 50, y: 204 },
     data: { label: "Your Kritama" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "intelligence",
+    extent: "parent",
     style: { ...branchNodeStyle, width: 220 },
   },
   {
     id: "your-app",
-    position: { x: 836, y: 256 },
+    position: { x: 50, y: 244 },
     data: { label: "Your App" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "application",
+    extent: "parent",
     style: { ...appNodeStyle, width: 220 },
   },
   {
     id: "memovee-web",
-    position: { x: 1130, y: 32 },
+    position: { x: 344, y: 20 },
     data: { label: "Chat" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "application",
+    extent: "parent",
     style: { ...mainNodeStyle, width: 120 },
   },
   {
     id: "memovee-api",
-    position: { x: 1130, y: 96 },
+    position: { x: 344, y: 84 },
     data: { label: "API" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "application",
+    extent: "parent",
     style: { ...mainNodeStyle, width: 120 },
   },
   {
     id: "memovee-mobile",
-    position: { x: 1130, y: 160 },
+    position: { x: 344, y: 148 },
     data: { label: "Mobile" },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    parentId: "application",
+    extent: "parent",
     style: { ...mainNodeStyle, width: 120 },
   },
 ];
