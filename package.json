@@ -10,11 +10,16 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/tailwind": "^3.0.1",
-		"astro": "^2.0.14",
-		"astro-heroicons": "^0.3.0",
-		"@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/typography": "^0.5.8",
-		"tailwindcss": "^3.2.7"
+		"@astrojs/react": "^4.4.2",
+		"@fontsource/open-sans": "^5.2.7",
+		"@tailwindcss/typography": "^0.5.19",
+		"@tailwindcss/vite": "^4.1.18",
+		"@xyflow/react": "^12.10.0",
+		"astro": "^5.17.2",
+		"astro-heroicons": "^2.1.5-1",
+		"daisyui": "^5.5.18",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"tailwindcss": "^4.1.18"
 	}
 }
