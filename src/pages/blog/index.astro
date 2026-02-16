@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import Main from "../../layouts/Main.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+---
+
+<Main title="Blog | Upmaru" description="Articles and updates from Upmaru.">
+  <section class="mx-auto max-w-3xl px-6 py-24 lg:py-32">
+    <div class="mb-10">
+      <a href="/" class="text-sm font-semibold text-primary hover:underline"
+        >&larr; Back to Home</a
+      >
+      <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Blog</h1>
+      <p class="mt-3 text-base-content/70">Articles and product updates.</p>
+    </div>
+
+    <ul class="space-y-6">
+      {
+        posts.map((post) => (
+          <li class="rounded-box border border-base-300 bg-base-100 p-5">
+            <p class="text-sm text-base-content/60">
+              {post.data.pubDate.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <h2 class="mt-2 text-2xl font-semibold">
+              <a href={`/blog/${post.slug}`} class="hover:underline">
+                {post.data.title}
+              </a>
+            </h2>
+            <p class="mt-2 text-base-content/75">{post.data.description}</p>
+            <p class="mt-3 text-sm text-base-content/70">
+              By {post.data.author}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Main>

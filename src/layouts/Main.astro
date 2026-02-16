@@ -3,7 +3,7 @@ import "../styles/global.css";
 const defaultTitle = "Upmaru";
 const defaultDescription =
   "Upmaru is the AI-native stack for builders and creators, combining infrastructure, intelligence, and application layers.";
-const defaultImage = "https://upmaru.com/social-preview.jpg";
+const defaultImage = new URL("/og.png", Astro.url).toString();
 const {
   title = defaultTitle,
   description = defaultDescription,
@@ -54,6 +54,8 @@ const {
         </p>
       </aside>
       <nav class="grid grid-flow-col gap-3 items-center">
+        <a href="/blog/" class="link link-hover">Blog</a>
+        <span>&bull;</span>
         <a href="/terms/" class="link link-hover">Terms</a>
         <span>&bull;</span>
         <a href="/privacy/" class="link link-hover">Privacy</a>
