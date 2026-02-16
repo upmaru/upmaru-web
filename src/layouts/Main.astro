@@ -3,7 +3,8 @@ import "../styles/global.css";
 const defaultTitle = "Upmaru";
 const defaultDescription =
   "Upmaru is the AI-native stack for builders and creators, combining infrastructure, intelligence, and application layers.";
-const defaultImage = new URL("/og.png", Astro.url).toString();
+const site = Astro.site ?? new URL("https://upmaru.com");
+const defaultImage = new URL("/og.png", site).toString();
 const {
   title = defaultTitle,
   description = defaultDescription,
