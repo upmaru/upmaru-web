@@ -30,6 +30,11 @@ type SuiteScoreSummary = {
 };
 
 const setupHtml = marked.parse(setupMarkdown);
+const site = Astro.site ?? new URL("https://upmaru.com");
+const pageImage = new URL(
+  "/llm-tests/simple-tama-agentic-workflow-q1-2026.png",
+  site,
+).toString();
 
 function normalizeScore(value: unknown): number | null {
   if (value === null || value === undefined) return null;
@@ -262,6 +267,7 @@ const summaryRows = suites.map((suite) => {
 <Main
   title="Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
   description="LLM suite index for the Simple Tama Agentic Workflow test run in Q1 2026."
+  image={pageImage}
 >
   <div class="mx-auto flex w-full flex-col items-center px-6 pt-12 lg:pt-16">
     <a href="/" class="inline-flex">
