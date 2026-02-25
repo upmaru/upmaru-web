@@ -102,17 +102,20 @@ const faqs = [
       <h2 class="text-2xl font-semibold">Methodology</h2>
       <div class="prose prose-invert mt-3 max-w-none text-base-content/75">
         <p>
-          To conduct a fair test, the same configuration and prompts are used
-          for every model.
+          This test differs from many benchmarks because it does not focus on
+          evaluating individual models in isolation. Instead, it evaluates how
+          an ensemble of models can perform together inside a real agentic
+          workflow.
         </p>
         <p>
-          We understand that prompt tuning may produce better output for
-          specific models, but we intentionally use a standardized prompt so we
-          can identify where outlier models perform differently.
+          The system is configured to prefer the cheapest and fastest model that
+          can reliably complete each step, and it may mix multiple models from
+          the same vendor to find practical performance boundaries.
         </p>
         <p>
-          This helps us evaluate model quality with less bias and makes
-          cross-model comparisons more reliable.
+          For example, if Gemini 3 Flash can complete a task, we can infer that
+          Gemini 3 Pro should also complete it, which indicates headroom for
+          more complex workloads on that vendor stack.
         </p>
         <p>
           If you spot any mistake in the results, please reach out at
