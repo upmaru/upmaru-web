@@ -128,6 +128,15 @@ const faqs = [
           more complex workloads on that vendor stack.
         </p>
         <p>
+          We also use the same prompt set across all models to make outliers
+          easier to identify, spot capability gaps, and analyze where specific
+          models fail.
+        </p>
+        <p>
+          We do not specialize prompts or apply model-specific prompt
+          engineering in these evaluations.
+        </p>
+        <p>
           If you spot any mistake in the results, please reach out at
           <a href="mailto:zack@upmaru.com" class="link link-primary"
             >zack@upmaru.com</a
@@ -137,7 +146,7 @@ const faqs = [
     </section>
 
     <section>
-      <h2 class="text-2xl font-semibold">Conducted Tests</h2>
+      <h2 class="text-2xl font-semibold">Tests Run</h2>
       <ul class="mt-4 space-y-6">
         {
           testRuns.map((run) => (
