@@ -10,6 +10,11 @@ const {
   description = defaultDescription,
   image = defaultImage,
 } = Astro.props;
+const pathname = Astro.url.pathname;
+const showTopTabs =
+  pathname.startsWith("/blog") || pathname.startsWith("/llm-tests");
+const isBlogPath = pathname.startsWith("/blog");
+const isLlmTestsPath = pathname.startsWith("/llm-tests");
 ---
 
 <html lang="en" data-theme="night">
@@ -43,6 +48,86 @@ const {
   </head>
   <body class="min-h-screen bg-base-200 text-base-content">
     <main>
+      {
+        showTopTabs && (
+          <nav class="mx-auto w-full px-4 pt-6 sm:px-6">
+            <div
+              role="tablist"
+              class="tabs tabs-box mx-auto w-fit border border-base-300 bg-base-100/90 shadow-xl backdrop-blur"
+            >
+              <a
+                role="tab"
+                href="/"
+                class:list={[
+                  "tab gap-2",
+                  !isBlogPath && !isLlmTestsPath && "tab-active",
+                ]}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 11.5 12 4l9 7.5M6.5 10v9h11v-9M10 19v-5h4v5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Home
+              </a>
+              <a
+                role="tab"
+                href="/blog/"
+                class:list={["tab gap-2", isBlogPath && "tab-active"]}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5ZM8.5 8h7M8.5 11.5h7M8.5 15h4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Blog
+              </a>
+              <a
+                role="tab"
+                href="/llm-tests/"
+                class:list={["tab gap-2", isLlmTestsPath && "tab-active"]}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M9 3.5v3M15 3.5v3M8 18h8M4.5 9h15M6.5 6.5h11A1.5 1.5 0 0 1 19 8v8.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 16.5V8a1.5 1.5 0 0 1 1.5-1.5Z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                LLM Tests
+              </a>
+            </div>
+          </nav>
+        )
+      }
       <slot />
     </main>
 
@@ -55,6 +140,8 @@ const {
         </p>
       </aside>
       <nav class="grid grid-flow-col gap-3 items-center">
+        <a href="/" class="link link-hover">Home</a>
+        <span>&bull;</span>
         <a href="/blog/" class="link link-hover">Blog</a>
         <span>&bull;</span>
         <a href="/terms/" class="link link-hover">Terms</a>

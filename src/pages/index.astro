@@ -21,6 +21,66 @@ const recentPosts = (
     class="hero relative isolate overflow-hidden bg-linear-to-b from-primary/10 to-transparent py-16 sm:py-24"
   >
     <div
+      class="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center px-4 sm:top-3 sm:px-6"
+    >
+      <div
+        role="tablist"
+        class="tabs tabs-box pointer-events-auto border border-base-300 bg-base-100/90 shadow-xl backdrop-blur"
+      >
+        <a role="tab" href="/" class="tab tab-active gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            class="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 11.5 12 4l9 7.5M6.5 10v9h11v-9M10 19v-5h4v5"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          Home
+        </a>
+        <a role="tab" href="/blog/" class="tab gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            class="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5ZM8.5 8h7M8.5 11.5h7M8.5 15h4"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          Blog
+        </a>
+        <a role="tab" href="/llm-tests/" class="tab gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            class="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path
+              d="M9 3.5v3M15 3.5v3M8 18h8M4.5 9h15M6.5 6.5h11A1.5 1.5 0 0 1 19 8v8.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 16.5V8a1.5 1.5 0 0 1 1.5-1.5Z"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          LLM Tests
+        </a>
+      </div>
+    </div>
+    <div
       aria-hidden="true"
       class="absolute -inset-y-24 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-45deg] bg-base-100 shadow-xl ring-1 shadow-primary/10 ring-base-300 sm:-mr-80 lg:-mr-96"
     >
@@ -30,7 +90,7 @@ const recentPosts = (
       class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-linear-to-t from-base-200 to-transparent sm:h-32"
     >
     </div>
-    <div class="hero-content text-center">
+    <div class="hero-content pt-24 text-center sm:pt-28">
       <div class="max-w-3xl">
         <div class="mb-6 flex justify-center">
           <a href="/" class="inline-flex">
