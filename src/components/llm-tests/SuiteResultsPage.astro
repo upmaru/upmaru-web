@@ -22,6 +22,7 @@ import { toYouTubeEmbedUrl } from "../../utils/llm-tests/media";
 type Props = {
   pageTitle: string;
   pageDescription: string;
+  pageImage?: string;
   backHref: string;
   fallbackSuiteName: string;
   resultsYaml: string;
@@ -74,6 +75,7 @@ type StepOutput = TaskTiming & {
 const {
   pageTitle,
   pageDescription,
+  pageImage,
   backHref,
   fallbackSuiteName,
   resultsYaml,
@@ -403,7 +405,7 @@ const overallOutputScore = averageAcrossTurns(outputScores, totalTurns);
 const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
 ---
 
-<Main title={pageTitle} description={pageDescription}>
+<Main title={pageTitle} description={pageDescription} image={pageImage}>
   <div class="mx-auto flex w-full flex-col items-center px-6 pt-12 lg:pt-16">
     <a href="/" class="inline-flex">
       <img class="h-12 w-auto" src="/instellar-logo.png" alt="Upmaru" />

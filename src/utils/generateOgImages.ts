@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
+import { extname, join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 import type { CollectionEntry } from "astro:content";
 import satori, { type SatoriOptions } from "satori";
+import llmTestOgImage from "./og-templates/llm-test";
 import postOgImage from "./og-templates/post";
 import siteOgImage from "./og-templates/site";
 
@@ -60,6 +62,32 @@ function svgBufferToPngBuffer(svg: string) {
   return pngData.asPng();
 }
 
+function resolveMimeType(filePath: string) {
+  const extension = extname(filePath).toLowerCase();
+  if (extension === ".svg") return "image/svg+xml";
+  if (extension === ".png") return "image/png";
+  if (extension === ".jpg" || extension === ".jpeg") return "image/jpeg";
+  if (extension === ".webp") return "image/webp";
+  return "application/octet-stream";
+}
+
+async function loadPublicAssetAsDataUri(publicPath: string | null) {
+  if (!publicPath) return null;
+
+  const normalizedPath = publicPath.startsWith("/")
+    ? publicPath.slice(1)
+    : publicPath;
+
+  try {
+    const absolutePath = join(process.cwd(), "public", normalizedPath);
+    const binary = await readFile(absolutePath);
+    const mimeType = resolveMimeType(normalizedPath);
+    return `data:${mimeType};base64,${binary.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 async function resolvePostOgIcon(iconName?: string): Promise<IconNode[]> {
   const safeIconName =
     iconName && ICON_NAME_PATTERN.test(iconName)
@@ -86,5 +114,31 @@ export async function generateOgImageForPost(post: CollectionEntry<"blog">) {
 
 export async function generateOgImageForSite() {
   const svg = await satori(siteOgImage(), options);
+  return svgBufferToPngBuffer(svg);
+}
+
+type LlmTestOgImageInput = {
+  runLabel: string;
+  title: string;
+  description: string;
+  iconPath: string | null;
+};
+
+export async function generateOgImageForLlmTest({
+  runLabel,
+  title,
+  description,
+  iconPath,
+}: LlmTestOgImageInput) {
+  const iconDataUri = await loadPublicAssetAsDataUri(iconPath);
+  const svg = await satori(
+    llmTestOgImage({
+      runLabel,
+      title,
+      description,
+      iconDataUri,
+    }),
+    options,
+  );
   return svgBufferToPngBuffer(svg);
 }

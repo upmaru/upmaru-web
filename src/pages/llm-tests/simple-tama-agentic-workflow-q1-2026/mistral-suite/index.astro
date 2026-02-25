@@ -1,11 +1,18 @@
 ---
 import SuiteResultsPage from "../../../../components/llm-tests/SuiteResultsPage.astro";
 import resultsYaml from "../../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/mistral-suite/results.yml?raw";
+
+const site = Astro.site ?? new URL("https://upmaru.com");
+const pageImage = new URL(
+  "/llm-tests/simple-tama-agentic-workflow-q1-2026/mistral-suite.png",
+  site,
+).toString();
 ---
 
 <SuiteResultsPage
   pageTitle="Mistral Suite | Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
   pageDescription="Mistral suite results for the Simple Tama Agentic Workflow Q1 2026 test run."
+  pageImage={pageImage}
   backHref="/llm-tests/simple-tama-agentic-workflow-q1-2026/"
   fallbackSuiteName="Mistral Suite"
   resultsYaml={resultsYaml}

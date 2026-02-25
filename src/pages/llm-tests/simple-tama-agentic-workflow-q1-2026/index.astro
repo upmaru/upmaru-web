@@ -3,6 +3,7 @@ import Main from "../../../layouts/Main.astro";
 import { marked } from "marked";
 import { FAILSAFE_SCHEMA, load } from "js-yaml";
 import setupMarkdown from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/setup.md?raw";
+import { simpleTamaQ12026Suites as suites } from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
 import SimpleTamaFlow from "../../../components/llm-tests/simple-tama-flow.js";
 import { summarizeLatencyScore } from "../../../utils/llm-tests/latency";
 import { sumStepScores } from "../../../utils/llm-tests/scoring";
@@ -27,19 +28,6 @@ type SuiteScoreSummary = {
   outputScoreAvg: number | null;
   latencyScoreAvg: number | null;
 };
-
-const suites = [
-  {
-    slug: "mistral-suite",
-    title: "Mistral Suite",
-    description: "Model runs and checks for the Mistral test suite.",
-  },
-  {
-    slug: "minimax-2-5",
-    title: "Minimax 2.5",
-    description: "Model runs and checks for Minimax 2.5.",
-  },
-];
 
 const setupHtml = marked.parse(setupMarkdown);
 
@@ -348,6 +336,14 @@ const summaryRows = suites.map((suite) => {
               <li class="rounded-box border border-base-300 bg-base-100 p-5">
                 <div class="flex h-full flex-col">
                   <div>
+                    {suite.iconSrc && (
+                      <img
+                        src={suite.iconSrc}
+                        alt={suite.iconAlt || `${suite.title} icon`}
+                        class="mb-3 h-8 w-auto"
+                        loading="lazy"
+                      />
+                    )}
                     <h3 class="text-xl font-semibold">
                       <a
                         href={`/llm-tests/simple-tama-agentic-workflow-q1-2026/${suite.slug}`}
