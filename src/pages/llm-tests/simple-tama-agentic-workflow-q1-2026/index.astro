@@ -295,9 +295,10 @@ const summaryRows = suites.map((suite) => {
         overall performance quality.
       </p>
       <p class="mt-2 text-base-content/70">
-        Agentic systems favor smaller, faster models, so the benchmark starts
-        with the fastest capable option and only moves up in model size or
-        reasoning depth when a smaller variant fails.
+        Agentic systems favor smaller, faster models. We escalate to larger
+        models or deeper reasoning only when a lower-parameter or
+        lower-reasoning configuration fails and there is enough latency
+        headroom.
       </p>
     </div>
 
