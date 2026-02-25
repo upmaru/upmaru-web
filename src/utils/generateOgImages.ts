@@ -5,6 +5,7 @@ import { Resvg } from "@resvg/resvg-js";
 import type { CollectionEntry } from "astro:content";
 import satori, { type SatoriOptions } from "satori";
 import llmTestOgImage from "./og-templates/llm-test";
+import llmTestRunOgImage from "./og-templates/llm-test-run";
 import postOgImage from "./og-templates/post";
 import siteOgImage from "./og-templates/site";
 
@@ -137,6 +138,34 @@ export async function generateOgImageForLlmTest({
       title,
       description,
       iconDataUri,
+    }),
+    options,
+  );
+  return svgBufferToPngBuffer(svg);
+}
+
+type LlmTestRunOgImageInput = {
+  title: string;
+  description: string;
+  iconPaths: string[];
+};
+
+export async function generateOgImageForLlmTestRun({
+  title,
+  description,
+  iconPaths,
+}: LlmTestRunOgImageInput) {
+  const iconDataUris = (
+    await Promise.all(
+      iconPaths.map((iconPath) => loadPublicAssetAsDataUri(iconPath)),
+    )
+  ).filter((iconDataUri): iconDataUri is string => Boolean(iconDataUri));
+
+  const svg = await satori(
+    llmTestRunOgImage({
+      title,
+      description,
+      iconDataUris,
     }),
     options,
   );
