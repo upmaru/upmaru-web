@@ -1,5 +1,5 @@
 suite: Minimax 2.5
-youtube: ""
+youtube: https://www.youtube.com/watch?v=OjQv7XLkxMU
 turns:
   - turn: 1
     message: Can you find me the top 10 movies in the database?
@@ -10,8 +10,8 @@ turns:
         model: MiniMax 2.5
         output_format: json
         score: 2
-        inserted_at: 2026-02-23 06:59:17.17003
-        updated_at: 2026-02-23 06:59:22.320905
+        inserted_at: 2026-02-23 07:07:58.991237
+        updated_at: 2026-02-23 07:08:02.434166
         output: |
           {
             "class": "chat-media-search",
@@ -24,8 +24,118 @@ turns:
         model: MiniMax 2.5
         output_format: json
         score: 2
-        inserted_at: 2026-02-23 06:59:22.34006
-        updated_at: 2026-02-23 06:59:30.988213
+        inserted_at: 2026-02-23 07:08:02.455175
+        updated_at: 2026-02-23 07:08:07.710514
+        output: |
+          {
+             "body": {
+               "search": {
+                 "classes": [
+                   {
+                     "name": "movie-details",
+                     "space": "movie-db"
+                   }
+                 ],
+                 "type": "all",
+                 "limit": 10,
+                 "filter": [
+                   {
+                     "by": "vote_count",
+                     "type": "range",
+                     "value": {
+                       "from": 500
+                     }
+                   }
+                 ],
+                 "sort": [
+                   {
+                     "by": "vote_average",
+                     "direction": "desc"
+                   },
+                   {
+                     "by": "vote_count",
+                     "direction": "desc"
+                   }
+                 ]
+               },
+               "next": null
+             }
+           }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: MiniMax 2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 07:08:07.721132
+        updated_at: 2026-02-23 07:08:12.13621
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-a9be3bf8cc911b95"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: MiniMax 2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 07:08:12.153494
+        updated_at: 2026-02-23 07:08:21.861777
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-a9be3bf8cc911b95"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8953-87ed-7c3a-a8f4-239c9fef9c7c"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: MiniMax 2.5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 07:08:21.872827
+        updated_at: 2026-02-23 07:08:37.229126
+        output: |
+          \n\nI found the top 10 movies in the database! 🎬 These are the highest-rated films based on user ratings with at least 500 votes. Here's the lineup:\n\n1. **The Wild Robot** - Rating: 8.3 (5,561 votes) - A heartwarming tale of a robot stranded on an uninhabited island who bonds with the wildlife.\n\n2. **Dune: Part Two** - Rating: 8.1 (7,469 votes) - Paul Atreides continues his epic journey alongside Chani and the Fremen in this sci-fi masterpiece.\n\n3. **Sonic the Hedgehog 3** - Rating: 7.6 (3,082 votes) - Team Sonic faces off against the mysterious new villain Shadow.\n\n4. **Deadpool & Wolverine** - Rating: 7.6 (8,019 votes) - The most votes on this list! Wade and Logan team up in this hilarious action flick.\n\n5. **Inside Out 2** - Rating: 7.5 (6,307 votes) - Riley's mind gets some new emotions, including Anxiety, and things get chaotic!\n\n6. **Furiosa: A Mad Max Saga** - Rating: 7.5 (4,542 votes) - The origin story of Furiosa from the Mad Max universe.\n\n7. **Bad Boys: Ride or Die** - Rating: 7.3 (3,139 votes) - Lowrey and Burnett try to clear their late captain's name.\n\n8. **The Beekeeper** - Rating: 7.3 (3,915 votes) - Jason Statham stars as a former operative seeking vengeance.\n\n9. **Alien: Romulus** - Rating: 7.2 (4,144 votes) - A terrifying horror adventure in space.\n\n10. **Conclave** - Rating: 7.2 (3,056 votes) - A thriller about the secretive process of electing a new Pope.\n\nCheck out the grid to see all the movie posters! Which one catches your eye? 🍿
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: MiniMax 2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 07:08:49.278018
+        updated_at: 2026-02-23 07:08:54.350589
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: MiniMax 2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 07:08:54.371038
+        updated_at: 2026-02-23 07:09:07.469283
         output: |
           {
             "body": {
@@ -36,14 +146,15 @@ turns:
                     "space": "movie-db"
                   }
                 ],
-                "type": "all",
-                "limit": 10,
+                "type": "vector",
+                "intent": "space, outer space, space travel, astronaut, sci-fi, space mission",
+                "limit": 25,
                 "filter": [
                   {
                     "by": "vote_count",
                     "type": "range",
                     "value": {
-                      "from": 500
+                      "from": 100
                     }
                   }
                 ],
@@ -67,14 +178,14 @@ turns:
         model: MiniMax 2.5
         output_format: json
         score: 2
-        inserted_at: 2026-02-23 06:59:30.998728
-        updated_at: 2026-02-23 06:59:35.968314
+        inserted_at: 2026-02-23 07:09:07.487098
+        updated_at: 2026-02-23 07:09:10.308456
         output: |
           {
             "class": "response-with-artifact",
-            "confidence": 0.98,
+            "confidence": 0.95,
             "referenced_tool_call_ids": [
-              "chatcmpl-tool-9ffd43067d10e0f8"
+              "chatcmpl-tool-a79bb53e9fbcc74a"
             ]
           }
       - id: 4
@@ -82,24 +193,24 @@ turns:
         chain: Memovee Chat Response with Artifact
         model: MiniMax 2.5
         output_format: json
-        score: 2
-        inserted_at: 2026-02-23 06:59:35.98882
-        updated_at: 2026-02-23 06:59:52.48602
+        score: 0
+        remark: The model failed to follow simple instructions, and instead copied the value provided by the example.
+        inserted_at: 2026-02-23 07:09:10.32932
+        updated_at: 2026-02-23 07:09:15.763045
         output: |
           {
             "body": {
               "artifact": {
                 "references": [
-                  "chatcmpl-tool-9ffd43067d10e0f8"
+                  "tool_call_id_1"
                 ],
                 "type": "grid",
-                "index": 0,
-                "configuration": {}
+                "index": 0
               }
             },
             "next": null,
             "path": {
-              "message_id": "019c894b-9149-7d41-8b46-016dfb9fe84c"
+              "message_id": "019c8954-4c69-7d42-a3cd-6f058907a026"
             }
           }
       - id: 5
@@ -107,65 +218,12 @@ turns:
         chain: Memovee Chat Response with Artifact
         model: MiniMax 2.5
         output_format: markdown_quote
-        score: 2
-        inserted_at: 2026-02-23 06:59:52.49663
-        updated_at: 2026-02-23 07:00:10.241434
+        score: 0
+        remark: The model could have at least provided some output but instead it just output empty string.
+        inserted_at: 2026-02-23 07:09:15.772803
+        updated_at: 2026-02-23 07:09:20.889251
         output: |
-          \n\nHere's your top 10 movies list! 🎬🍿\n\nI found the highest-rated films in the database (with at least 500 votes), and wow—what a lineup! All of these are 2024 releases, which tells me this has been an incredible year for cinema.\n\n**The top movie is \"The Wild Robot\"** with an impressive rating of **8.318**! This animated sci-fi about a robot stranded on an uninhabited island who befriends the wildlife has clearly captured audiences' hearts.\n\nRight behind it is **\"Dune: Part Two\"** with an **8.131** rating—the epic conclusion to Denis Villeneuve's Dune saga continues towow viewers with its breathtaking visuals and storytelling.\n\nThe rest of the list includes some heavy hitters:\n- **Deadpool & Wolverine** (7.567) - the most votes (8,019!) proving it's a fan favorite\n- **Inside Out 2** (7.548) - Pixar's emotional sequel is still going strong\n- **Furiosa: A Mad Max Saga** (7.5) - George Miller's latest action masterpiece\n- And more including Sonic 3, Bad Boys: Ride or Die, The Beekeeper, Alien: Romulus, and Conclave\n\nYou can see the full grid above with posters and more details for each film. Let me know if you'd like to dive deeper into any of these or get recommendations based on your favorites!
-
-  - turn: 2
-    message: Can you find me movies that take place in space?
-    tasks:
-      - id: 1
-        name: routing
-        chain: Chat Router
-        model: ""
-        output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
-      - id: 2
-        name: query-database
-        chain: Chat Media Search
-        model: ""
-        output_format: json
-        score:
-        remark: |
-          Prompt contains instruction to generate 4-7 keywords, model only produced a single keyword. Though it was correct it could have been better. Could be that this is a coding model so it's not very expressive with language and being creative.
-
-          Might be worth adjusting the temperature to see if it does better.
-        inserted_at: ""
-        updated_at: ""
-        output: ""
-      - id: 3
-        name: routing
-        chain: Chat Media Search
-        model: ""
-        output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
-      - id: 4
-        name: create-artifact
-        chain: Memovee Chat Response with Artifact
-        model: ""
-        output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
-      - id: 5
-        name: stream-response
-        chain: Memovee Chat Response with Artifact
-        model: ""
-        output_format: markdown_quote
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
-
+          \n\n\n
   - turn: 3
     message: Can you find me the top cartoons?
     tasks:

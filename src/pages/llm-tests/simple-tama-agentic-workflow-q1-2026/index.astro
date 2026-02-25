@@ -127,10 +127,10 @@ function parseSummaryTurns(parsed: Record<string, unknown>): SummaryTurn[] {
   return [{ turn: Number(parsed.turn ?? 1), tasks }];
 }
 
-function average(values: number[]) {
-  if (!values.length) return null;
-  const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
-  return Number(avg.toFixed(1));
+function averageAcrossTurns(values: number[], totalTurns: number) {
+  if (totalTurns <= 0) return null;
+  const total = values.reduce((sum, value) => sum + value, 0);
+  return Number((total / totalTurns).toFixed(1));
 }
 
 function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
@@ -191,8 +191,8 @@ function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
     totalTurns: turns.length,
     outputScoredTurns: outputScores.length,
     latencyScoredTurns: latencyScores.length,
-    outputScoreAvg: average(outputScores),
-    latencyScoreAvg: average(latencyScores),
+    outputScoreAvg: averageAcrossTurns(outputScores, turns.length),
+    latencyScoreAvg: averageAcrossTurns(latencyScores, turns.length),
   };
 }
 

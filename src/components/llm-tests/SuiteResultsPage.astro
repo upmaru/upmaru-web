@@ -205,10 +205,10 @@ function formatDurationMs(durationMicros: number) {
   return (durationMicros / 1000).toFixed(3);
 }
 
-function averageToOneDecimal(values: number[]) {
-  if (!values.length) return null;
-  const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
-  return Number(avg.toFixed(1));
+function averageAcrossTurns(values: number[], totalTurns: number) {
+  if (totalTurns <= 0) return null;
+  const total = values.reduce((sum, value) => sum + value, 0);
+  return Number((total / totalTurns).toFixed(1));
 }
 
 function formatOverallScore(value: number | null) {
@@ -398,8 +398,9 @@ const outputScores = parsedResults.turns
 const latencyScores = turnViews
   .map((turnView) => turnView.latencyScoreSummary?.normalizedScore ?? null)
   .filter((score): score is number => typeof score === "number");
-const overallOutputScore = averageToOneDecimal(outputScores);
-const overallLatencyScore = averageToOneDecimal(latencyScores);
+const totalTurns = parsedResults.turns.length;
+const overallOutputScore = averageAcrossTurns(outputScores, totalTurns);
+const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
 ---
 
 <Main title={pageTitle} description={pageDescription}>
@@ -776,7 +777,7 @@ const overallLatencyScore = averageToOneDecimal(latencyScores);
                 </div>
                 <div class="stat-desc">
                   {outputScores.length} of {parsedResults.turns.length} turns
-                  scored
+                  scored (missing turns counted as 0)
                 </div>
               </div>
 
@@ -804,7 +805,7 @@ const overallLatencyScore = averageToOneDecimal(latencyScores);
                 </div>
                 <div class="stat-desc">
                   {latencyScores.length} of {turnViews.length} turns with
-                  latency data
+                  latency data (missing turns counted as 0)
                 </div>
               </div>
             </div>
