@@ -251,6 +251,8 @@ const summaryRows = suites.map((suite) => {
   return {
     title: score?.suite || suite.title,
     href: `/llm-tests/simple-tama-agentic-workflow-q1-2026/${suite.slug}`,
+    iconSrc: suite.iconSrc,
+    iconAlt: suite.iconAlt || `${suite.title} icon`,
     outputScore,
     latencyScore,
     outputScoreText: formatOutOfTen(outputScore),
@@ -286,7 +288,16 @@ const summaryRows = suites.map((suite) => {
         Simple Tama Agentic Workflow - Q1 2026
       </h1>
       <p class="mt-3 text-base-content/70">
-        Suite pages and model-specific results for this test run.
+        Baseline workflow that tests a model, or an ensemble of models, on its
+        ability to navigate an agentic system. These tests cover tasks such as
+        <code>classification</code>, <code>function calling</code>,{" "}
+        <code>intent detection</code>, and other workflow behaviors to evaluate
+        overall performance quality.
+      </p>
+      <p class="mt-2 text-base-content/70">
+        Agentic systems favor smaller, faster models, so the benchmark starts
+        with the fastest capable option and only moves up in model size or
+        reasoning depth when a smaller variant fails.
       </p>
     </div>
 
@@ -376,8 +387,7 @@ const summaryRows = suites.map((suite) => {
       <section>
         <h2 class="text-2xl font-semibold">Summary</h2>
         <p class="mt-2 text-base-content/75">
-          Capture key findings, tradeoffs, and recommendations from this test
-          run.
+          Key findings and results summary in a single rankings table.
         </p>
         <div
           class="mt-4 overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
@@ -385,6 +395,7 @@ const summaryRows = suites.map((suite) => {
           <table class="table">
             <thead>
               <tr>
+                <th></th>
                 <th></th>
                 <th>Model Test</th>
                 <th>
@@ -419,6 +430,16 @@ const summaryRows = suites.map((suite) => {
                       data-latency-score-sort={row.latencyScoreSort}
                     >
                       <th>{index + 1}</th>
+                      <td>
+                        {row.iconSrc && (
+                          <img
+                            src={row.iconSrc}
+                            alt={row.iconAlt}
+                            class="h-5 w-auto"
+                            loading="lazy"
+                          />
+                        )}
+                      </td>
                       <td>
                         <a
                           href={row.href}
