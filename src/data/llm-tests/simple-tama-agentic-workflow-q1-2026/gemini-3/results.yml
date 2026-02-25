@@ -1,0 +1,149 @@
+suite: Gemini 3
+youtube: ""
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: markdown_quote
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: markdown_quote
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: ""
+        output_format: markdown_quote
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""

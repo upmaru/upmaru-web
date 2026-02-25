@@ -24,4 +24,11 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/minimax-color.svg",
     iconAlt: "Minimax 2.5 icon",
   },
+  {
+    slug: "gemini-3",
+    title: "Gemini 3",
+    description: "Test for Gemini 3 model in an agentic workflow",
+    iconSrc: "/gemini-color.svg",
+    iconAlt: "Gemini 3 icon",
+  },
 ];
