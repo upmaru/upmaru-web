@@ -16,7 +16,7 @@ turns:
           {
             "class": "chat-media-search",
             "confidence": 0.98,
-            "referenced_tool_call_ids": [],
+            "referenced_tool_call_ids": []
           }
       - id: 2
         name: query-database
@@ -82,7 +82,7 @@ turns:
             "confidence": 0.98,
             "referenced_tool_call_ids": [
               "DlVlYrtMV"
-            ],
+            ]
           }
       - id: 2
         name: query-database
@@ -174,50 +174,121 @@ turns:
           Oh, you’re looking for movies that take place in space? Buckle up, because I’ve got just the one for you—**\"Alien: Romulus\"**!\n\nThis one’s a classic space horror setup: a group of young space colonizers are scavenging the deep ends of a derelict space station when—you guessed it—they come face-to-face with the *most terrifying life form in the universe*. Cue the screams, the suspense, and all the chills you’d expect from the *Alien* franchise.\n\nIt’s got a solid **7.2 average rating** from over **4,100 votes**, so you know it’s delivering that signature *Alien* tension. If you’re a fan of sci-fi horror with a side of claustrophobic dread, this one’s for you!\n\nWant more space adventures? Let me know—I can dig up more cosmic thrills! 🚀✨
 
   - turn: 3
-    message: ""
+    message: Can you find me the top cartoons?
     tasks:
       - id: 1
         name: routing
         chain: Chat Router
         model: Ministral 3 14b
         output_format: json
-        score: ""
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-23 05:06:55.605805
+        updated_at: 2026-02-23 05:06:56.283534
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
       - id: 2
         name: query-database
         chain: Chat Media Search
         model: Codestral 2508
         output_format: json
-        score: ""
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-23 05:06:56.30263
+        updated_at: 2026-02-23 05:06:58.287794
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
         model: Ministral 3 14b
         output_format: json
-        score: ""
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-23 05:06:58.298462
+        updated_at: 2026-02-23 05:06:59.541157
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "YR0bGLCue"
+            ]
+          }
       - id: 4
         name: create-artifact
         chain: Memovee Chat Response with Artifact
         model: Codestral 2508
         output_format: json
-        score: ""
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-23 05:06:59.565162
+        updated_at: 2026-02-23 05:07:00.426665
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "YR0bGLCue"
+                ]
+              }
+            },
+            "path": {
+              "message_id": "019c88e4-b350-79d0-9303-15048e5a6803"
+            },
+            "next": null
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
         model: Mistral Medium 3.1
         output_format: markdown_quote
-        score: ""
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-23 05:07:00.437301
+        updated_at: 2026-02-23 05:07:05.138366
+        output: |
+          Oh, you're in for a treat! Here are some of the **top animated movies** that are absolutely *crushing* it with audiences right now:\n\n- **\"The Wild Robot\"** is leading the pack with an **average rating of 8.3** from over **5,500 votes**! This heartwarming tale of a robot bonding with animals on a deserted island sounds like an emotional rollercoaster—think *Wall-E* meets *The Jungle Book* but with a futuristic twist.\n\n- **\"Inside Out 2\"** is another *must-watch*, especially if you loved the first one! With a **7.5 rating** from over **6,300 votes**, Riley’s mind is back in chaos as new emotions (like Anxiety) join the crew. Pixar’s really digging deep into the feels with this one!\n\n- And of course, **\"Kung Fu Panda 4\"** brings Po back for more action-packed adventures! It’s got a **solid 7.0 rating** from over **3,300 votes**, and this time, Po’s training a new Dragon Warrior while facing off against a villain who can *literally* bring back old foes. How cool is that?\n\nThese are some of the *highest-rated* animated films out there right now, so if you're looking for quality, you can’t go wrong with any of them! Check out the grid for more details. 🎬✨\n\nWant me to dig up more gems or maybe something in a specific style? Just say the word!
