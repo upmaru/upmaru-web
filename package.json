@@ -28,5 +28,8 @@
 		"rehype-mermaid": "^3.0.0",
 		"satori": "^0.19.2",
 		"tailwindcss": "^4.1.18"
+	},
+	"devDependencies": {
+		"@types/js-yaml": "^4.0.9"
 	}
 }

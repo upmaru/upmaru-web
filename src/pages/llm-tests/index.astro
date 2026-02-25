@@ -1,0 +1,138 @@
+---
+import Main from "../../layouts/Main.astro";
+
+const testRuns = [
+  {
+    slug: "simple-tama-agentic-workflow-q1-2026",
+    title: "Simple Tama Agentic Workflow - Q1 2026",
+    description:
+      "Baseline evaluation of agentic workflow behavior and output quality.",
+  },
+];
+
+const faqs = [
+  {
+    question: "What is this test based on?",
+    answerHtml:
+      'The tests are based on real workflow being used in <a href="https://memovee.com" class="link link-primary">https://memovee.com</a>.',
+  },
+  {
+    question: "How is the test being run?",
+    answerHtml:
+      'The user query is submitted through a UI and is processed by the <a href="https://kritama.com" class="link link-primary">https://kritama.com</a> engine.',
+  },
+  {
+    question: "Is the code for these tests open-sourced?",
+    answer:
+      "For now we do not have plans on open-sourcing the test suite, the reason being that we want to avoid having the model creators optimize models for the tests. Since that defeats the premise of an 'intelligent model' that can 'generalize' over problems. The models should be able to solve these problems based on their training without specializing for these tests.",
+  },
+  {
+    question: "What makes this benchmark different from other benchmarks?",
+    answer:
+      "These tests are based on real use cases. They test how capable a model is in the context of an agentic system. These systems have to reason about the user's query, be able to solve problems and generate an output that is accurate. This is the use-case required by many enterprise level agentic applications. Models that pass these tests are highly likely to succeed in enterprise applications.",
+  },
+];
+---
+
+<Main
+  title="LLM Tests | Upmaru"
+  description="Catalog of LLM test runs and evaluation suites."
+>
+  <section class="mx-auto max-w-3xl px-6 py-24 lg:py-32">
+    <div class="mb-10">
+      <a href="/" class="text-sm font-semibold text-primary hover:underline"
+        >&larr; Back to Home</a
+      >
+      <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+        LLM Tests
+      </h1>
+      <p class="mt-3 text-base-content/70">
+        List of test runs conducted for LLM behavior and workflow evaluation.
+      </p>
+    </div>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold">Purpose</h2>
+      <div class="prose prose-invert mt-3 max-w-none text-base-content/75">
+        <p>
+          Building agentic systems is hard. Getting a system to process user
+          queries correctly while respecting system-level constraints requires
+          coordination, testing, and iteration. Choosing the right model can
+          make or break your workflow, and the model should not be the limiting
+          factor in your system.
+        </p>
+        <p>
+          These tests are designed to help identify which models are worth
+          exploring for agentic systems, and which ones should be avoided and
+          why. Avoiding the hype cycle of each new model release and knowing
+          which models actually work will put you ahead when building reliable
+          agentic systems.
+        </p>
+        <p>
+          Model makers also have a strong incentive to optimize for benchmark
+          scores while failing in real use cases. See this paper for one
+          example:
+          <a
+            href="https://arxiv.org/pdf/2504.20879"
+            class="link link-primary"
+            target="_blank"
+            rel="noopener noreferrer">https://arxiv.org/pdf/2504.20879</a
+          >.
+        </p>
+        <p>
+          The goal is to reduce uncertainty so you do not have to guess whether
+          failure comes from your orchestration design or from model capability
+          limits.
+        </p>
+        <p>
+          If we are going to move forward as an industry, we must accept the
+          truth of outcomes so we can make real improvements and work toward
+          agentic systems that are correct, useful, and safe for users.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold">Conducted Tests</h2>
+      <ul class="mt-4 space-y-6">
+        {
+          testRuns.map((run) => (
+            <li class="rounded-box border border-base-300 bg-base-100 p-5">
+              <h3 class="text-2xl font-semibold">
+                <a href={`/llm-tests/${run.slug}`} class="hover:underline">
+                  {run.title}
+                </a>
+              </h3>
+              <p class="mt-2 text-base-content/75">{run.description}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">FAQ</h2>
+      <div class="join join-vertical mt-4 w-full bg-base-100">
+        {
+          faqs.map((faq, index) => (
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input
+                type="radio"
+                name="llm-tests-faq-accordion"
+                checked={index === 0}
+              />
+              <div class="collapse-title font-semibold">{faq.question}</div>
+              <div class="collapse-content text-sm leading-relaxed">
+                {faq.answerHtml ? (
+                  <Fragment set:html={faq.answerHtml} />
+                ) : (
+                  faq.answer
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </section>
+</Main>

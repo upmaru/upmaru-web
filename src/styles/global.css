@@ -18,3 +18,33 @@ body {
     "Segoe UI",
     sans-serif;
 }
+
+.simple-tama-flow .react-flow__controls {
+  border: 1px solid var(--color-base-300);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--color-base-100);
+  box-shadow: 0 8px 20px
+    color-mix(in oklab, var(--color-base-content) 12%, transparent);
+}
+
+.simple-tama-flow .react-flow__controls-button {
+  width: 34px;
+  height: 34px;
+  border-bottom: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  transition: background-color 0.2s ease;
+}
+
+.simple-tama-flow .react-flow__controls-button:last-child {
+  border-bottom: none;
+}
+
+.simple-tama-flow .react-flow__controls-button:hover {
+  background: color-mix(
+    in oklab,
+    var(--color-primary) 12%,
+    var(--color-base-100)
+  );
+}

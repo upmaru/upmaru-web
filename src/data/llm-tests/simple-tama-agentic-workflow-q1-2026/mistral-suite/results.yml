@@ -1,0 +1,223 @@
+suite: Mistral Suite
+youtube: https://www.youtube.com/watch?v=TGsP7RXkuwI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Ministral 3 14b
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:14.130886
+        updated_at: 2026-02-23 05:06:14.881065
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [],
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Codestral 2508
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:14.904444
+        updated_at: 2026-02-23 05:06:16.375674
+        output: |
+          {"body": {"search": {"classes": [{"space": "movie-db", "name": "movie-details"}], "type": "all", "limit": 10, "filter": [{"by": "vote_count", "type": "range", "value": {"from": 500}}], "sort": [{"by": "vote_average", "direction": "desc"}, {"by": "vote_count", "direction": "desc"}]}}, "next": null}
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Ministral 3 14b
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:16.386866
+        updated_at: 2026-02-23 05:06:17.412135
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.99,
+            "referenced_tool_call_ids": [
+              "DlVlYrtMV"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Codestral 2508
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:17.433443
+        updated_at: 2026-02-23 05:06:18.333984
+        output: |
+          {"path": {"message_id": "019c88e4-1146-7006-8e3d-8c571b55ac50"}, "body": {"artifact": {"type": "grid", "index": 0, "references": ["DlVlYrtMV"]}}, "next": null}
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Medium 3.1
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 05:06:18.344584
+        updated_at: 2026-02-23 05:06:23.908958
+        output: |
+          Alright, let's dive into the top 10 movies that are absolutely killing it right now! These films are the cream of the crop, with the highest ratings and the most votes, so you know they're worth checking out.\n\nAt the top of the list, we have **\"The Wild Robot\"**—an animated gem about a robot bonding with animals on a deserted island. It’s got an impressive **average rating of 8.32** from over **5,500 votes**! That’s some serious love from the audience.\n\nNext up, **\"Dune: Part Two\"** is still riding high with an **average rating of 8.13** and nearly **7,500 votes**. Denis Villeneuve’s epic sci-fi saga is clearly a fan favorite, and it’s easy to see why—those visuals are *next-level* stunning!\n\nWe’ve also got some heavy hitters like **\"Deadpool & Wolverine\"**—because who doesn’t love a little Ryan Reynolds sarcasm mixed with Hugh Jackman’s claws? It’s sitting pretty with a **7.57 rating** from over **8,000 votes**, so you know it’s delivering the goods.\n\nAnd let’s not forget **\"Inside Out 2\"**—Pixar’s back with another emotional rollercoaster, this time introducing **Anxiety** to the mix. It’s got a **7.55 rating** and over **6,300 votes**, so grab the tissues!\n\nOh, and **\"Furiosa: A Mad Max Saga\"** is here too, giving us more high-octane action from the wasteland. With a **7.5 rating** and **4,500 votes**, it’s clear George Miller still knows how to deliver pure adrenaline.\n\nThere’s so much more to explore, like **\"Sonic the Hedgehog 3\"**, **\"Bad Boys: Ride or Die\"**, and even **\"Alien: Romulus\"**—because who doesn’t love a good space horror flick? Check out the full list to see all the details, and let me know if you want to dive deeper into any of these! 🎬✨
+
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Ministral 3 14b
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:37.696489
+        updated_at: 2026-02-23 05:06:38.582857
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "DlVlYrtMV"
+            ],
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Codestral 2508
+        output_format: json
+        score: 1
+        remark: |
+          Prompt contains instruction to generate 4-7 keywords, model only produced a single keyword. Though it was correct it could have been better. Could be that this is a coding model so it's not very expressive with language and being creative.
+
+          Might be worth adjusting the temperature to see if it does better.
+        inserted_at: 2026-02-23 05:06:38.603439
+        updated_at: 2026-02-23 05:06:41.024674
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "type": "vector",
+                "intent": "space",
+                "limit": 25,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Ministral 3 14b
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:41.043506
+        updated_at: 2026-02-23 05:06:41.954078
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "pYNppY3jY"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Codestral 2508
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 05:06:41.975215
+        updated_at: 2026-02-23 05:06:42.887118
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "pYNppY3jY"
+                ]
+              }
+            },
+            "path": {
+              "message_id": "019c88e4-6d66-7174-8fa9-e386e315f875"
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Medium 3.1
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 05:06:42.908342
+        updated_at: 2026-02-23 05:06:43.820244
+        output: |
+          Oh, you’re looking for movies that take place in space? Buckle up, because I’ve got just the one for you—**\"Alien: Romulus\"**!\n\nThis one’s a classic space horror setup: a group of young space colonizers are scavenging the deep ends of a derelict space station when—you guessed it—they come face-to-face with the *most terrifying life form in the universe*. Cue the screams, the suspense, and all the chills you’d expect from the *Alien* franchise.\n\nIt’s got a solid **7.2 average rating** from over **4,100 votes**, so you know it’s delivering that signature *Alien* tension. If you’re a fan of sci-fi horror with a side of claustrophobic dread, this one’s for you!\n\nWant more space adventures? Let me know—I can dig up more cosmic thrills! 🚀✨
+
+  - turn: 3
+    message: ""
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Ministral 3 14b
+        output_format: json
+        score: ""
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Codestral 2508
+        output_format: json
+        score: ""
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Ministral 3 14b
+        output_format: json
+        score: ""
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Codestral 2508
+        output_format: json
+        score: ""
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Medium 3.1
+        output_format: markdown_quote
+        score: ""
+        inserted_at: ""
+        updated_at: ""
+        output: ""
