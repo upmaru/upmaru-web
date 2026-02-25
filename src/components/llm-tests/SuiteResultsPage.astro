@@ -403,7 +403,13 @@ const overallLatencyScore = averageToOneDecimal(latencyScores);
 ---
 
 <Main title={pageTitle} description={pageDescription}>
-  <section class="mx-auto max-w-4xl px-6 py-20 lg:py-28">
+  <div class="mx-auto flex w-full flex-col items-center px-6 pt-12 lg:pt-16">
+    <a href="/" class="inline-flex">
+      <img class="h-12 w-auto" src="/instellar-logo.png" alt="Upmaru" />
+    </a>
+    <p class="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">Upmaru</p>
+  </div>
+  <section class="mx-auto max-w-4xl px-6 pb-20 pt-10 lg:pb-28 lg:pt-12">
     <a
       href={backHref}
       class="text-sm font-semibold text-primary hover:underline"
