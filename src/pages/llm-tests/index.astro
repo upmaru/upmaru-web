@@ -1,12 +1,22 @@
 ---
 import Main from "../../layouts/Main.astro";
+import { simpleTamaQ12026Suites } from "../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
+
+const simpleTamaProviderIcons = simpleTamaQ12026Suites
+  .map((suite) => ({
+    src: suite.iconSrc,
+    alt: suite.iconAlt || `${suite.title} icon`,
+  }))
+  .filter((provider) => Boolean(provider.src));
 
 const testRuns = [
   {
     slug: "simple-tama-agentic-workflow-q1-2026",
     title: "Simple Tama Agentic Workflow - Q1 2026",
     description:
-      "Baseline evaluation of agentic workflow behavior and output quality.",
+      "Simple agentic workflow to test the quality of output based on set criteria and latency of the agent's response.",
+    status: "Ongoing",
+    providers: simpleTamaProviderIcons,
   },
 ];
 
@@ -132,12 +142,29 @@ const faqs = [
         {
           testRuns.map((run) => (
             <li class="rounded-box border border-base-300 bg-base-100 p-5">
-              <h3 class="text-2xl font-semibold">
-                <a href={`/llm-tests/${run.slug}`} class="hover:underline">
-                  {run.title}
-                </a>
-              </h3>
+              <div class="flex items-start justify-between gap-3">
+                <h3 class="text-2xl font-semibold">
+                  <a href={`/llm-tests/${run.slug}`} class="hover:underline">
+                    {run.title}
+                  </a>
+                </h3>
+                {run.status && (
+                  <span class="badge badge-warning badge-sm">{run.status}</span>
+                )}
+              </div>
               <p class="mt-2 text-base-content/75">{run.description}</p>
+              {run.providers?.length > 0 && (
+                <div class="mt-4 flex items-center gap-2">
+                  {run.providers.map((provider) => (
+                    <img
+                      src={provider.src}
+                      alt={provider.alt}
+                      class="h-6 w-auto"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              )}
             </li>
           ))
         }
