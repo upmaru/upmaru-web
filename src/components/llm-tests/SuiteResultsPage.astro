@@ -50,6 +50,7 @@ type ParsedTurn = {
 
 type ParsedResultsDocument = {
   suite: string;
+  note: string;
   youtubeEmbedUrl: string | null;
   turns: ParsedTurn[];
 };
@@ -162,15 +163,18 @@ function parseResultsDocument(yamlText: string): ParsedResultsDocument {
   if (!parsed || typeof parsed !== "object") {
     return {
       suite: "",
+      note: "",
       youtubeEmbedUrl: null,
       turns: [],
     };
   }
 
   const youtubeRaw = String(parsed.youtube ?? "").trim();
+  const noteRaw = String(parsed.note ?? "").trim();
 
   return {
     suite: String(parsed.suite ?? ""),
+    note: noteRaw,
     youtubeEmbedUrl: youtubeRaw ? toYouTubeEmbedUrl(youtubeRaw) : null,
     turns: parseTurns(parsed),
   };
@@ -427,6 +431,27 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
           `Output and timing analysis for the ${parsedResults.suite || fallbackSuiteName} suite in the agentic workflow.`
       }
     </p>
+    {
+      parsedResults.note && (
+        <div role="alert" class="alert alert-info alert-soft mt-4 items-start">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="h-5 w-5 shrink-0 stroke-current"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" stroke-width="2" />
+            <path d="M12 10v6" stroke-width="2" stroke-linecap="round" />
+            <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none" />
+          </svg>
+          <div class="w-full">
+            <p class="font-semibold leading-none">Note</p>
+            <div class="mt-1 whitespace-pre-line">{parsedResults.note}</div>
+          </div>
+        </div>
+      )
+    }
     {
       parsedResults.youtubeEmbedUrl && (
         <div class="mt-8">
