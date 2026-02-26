@@ -1,5 +1,6 @@
 suite: Mistral Suite
 youtube: https://www.youtube.com/watch?v=TGsP7RXkuwI
+inference_provider: Mistral
 turns:
   - turn: 1
     message: Can you find me the top 10 movies in the database?

@@ -1,5 +1,6 @@
 suite: Minimax 2.5
 youtube: https://www.youtube.com/watch?v=OjQv7XLkxMU
+inference_provider: Fireworks AI
 turns:
   - turn: 1
     message: Can you find me the top 10 movies in the database?
