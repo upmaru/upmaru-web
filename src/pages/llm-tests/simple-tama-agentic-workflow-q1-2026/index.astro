@@ -5,6 +5,9 @@ import { FAILSAFE_SCHEMA, load } from "js-yaml";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AngelIcon,
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  ArrowUpDownIcon,
   ConfusedIcon,
   DispleasedIcon,
 } from "@hugeicons/core-free-icons";
@@ -308,7 +311,7 @@ const summaryRows = suites.map((suite) => {
 
 <Main
   title="Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
-  description="LLM suite index for the Simple Tama Agentic Workflow test run in Q1 2026."
+  description="LLM Simple Tama Agentic Workflow benchmark test run."
   image={pageImage}
 >
   <div class="mx-auto flex w-full flex-col items-center px-6 pt-12 lg:pt-16">
@@ -583,7 +586,39 @@ const summaryRows = suites.map((suite) => {
                       aria-label="Sort by Overall Score"
                       title="Sort by Overall Score"
                     >
-                      <span aria-hidden="true" data-sort-icon>↕</span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-unsorted
+                        class="inline-flex"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUpDownIcon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-desc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowDown01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-asc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUp01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
                     </button>
                   </div>
                 </th>
@@ -598,7 +633,39 @@ const summaryRows = suites.map((suite) => {
                       aria-label="Sort by Output Score"
                       title="Sort by Output Score"
                     >
-                      <span aria-hidden="true" data-sort-icon>↕</span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-unsorted
+                        class="inline-flex"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUpDownIcon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-desc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowDown01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-asc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUp01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
                     </button>
                   </div>
                 </th>
@@ -614,7 +681,39 @@ const summaryRows = suites.map((suite) => {
                       aria-label="Sort by Latency Score"
                       title="Sort by Latency Score"
                     >
-                      <span aria-hidden="true" data-sort-icon>↕</span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-unsorted
+                        class="inline-flex"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUpDownIcon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-desc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowDown01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        data-sort-icon-asc
+                        class="hidden"
+                      >
+                        <HugeiconsIcon
+                          icon={ArrowUp01Icon}
+                          size={14}
+                          strokeWidth={1.8}
+                        />
+                      </span>
                     </button>
                   </div>
                 </th>
@@ -758,13 +857,25 @@ const summaryRows = suites.map((suite) => {
       buttons.forEach((button) => {
         const isActive = button.dataset.sortKey === activeKey;
         const label = button.dataset.label || "score";
-        const icon = button.querySelector<HTMLElement>("[data-sort-icon]");
-        if (icon)
-          icon.textContent = isActive
-            ? direction === "desc"
-              ? "↓"
-              : "↑"
-            : "↕";
+        const unsortedIcon = button.querySelector<HTMLElement>(
+          "[data-sort-icon-unsorted]",
+        );
+        const descIcon = button.querySelector<HTMLElement>(
+          "[data-sort-icon-desc]",
+        );
+        const ascIcon = button.querySelector<HTMLElement>(
+          "[data-sort-icon-asc]",
+        );
+
+        if (isActive) {
+          unsortedIcon?.classList.add("hidden");
+          descIcon?.classList.toggle("hidden", direction !== "desc");
+          ascIcon?.classList.toggle("hidden", direction !== "asc");
+        } else {
+          unsortedIcon?.classList.remove("hidden");
+          descIcon?.classList.add("hidden");
+          ascIcon?.classList.add("hidden");
+        }
         button.setAttribute(
           "aria-label",
           isActive
