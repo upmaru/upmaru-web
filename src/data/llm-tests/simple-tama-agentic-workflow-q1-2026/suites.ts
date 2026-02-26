@@ -45,6 +45,21 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/zai-logo.svg",
     iconAlt: "Z.ai logo",
   },
+  {
+    slug: "grok-4-1-fast",
+    title: "Grok 4.1 Fast",
+    description: "Test for Grok 4.1 Fast model in an agentic workflow",
+    iconSrc: "/grok.svg",
+    iconAlt: "Grok icon",
+  },
+  {
+    slug: "grok-code-fast-1-suite",
+    title: "Grok Code Fast 1 Suite",
+    description:
+      "Test for a Grok 4.1 Fast and Grok Code Fast 1 mixed suite in an agentic workflow",
+    iconSrc: "/grok.svg",
+    iconAlt: "Grok icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {

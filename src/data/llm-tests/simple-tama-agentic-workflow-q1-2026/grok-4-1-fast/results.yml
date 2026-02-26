@@ -1,0 +1,199 @@
+suite: Grok 4.1 Fast
+youtube: https://www.youtube.com/watch?v=RCelZuWxqb8
+inference_provider: xAI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Grok 4.1 Fast Non Reasoning
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:49:20.852798
+        updated_at: 2026-02-24 05:49:21.942549
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Grok 4.1 Fast Reasoning
+        output_format: json
+        score: 0
+        inserted_at: 2026-02-24 05:49:21.957499
+        updated_at: 2026-02-24 05:49:26.080154
+        remark: |
+          The model did not produce the correct output. It's missing some very key components in the query. It did not follow the instructions provided whatsoever.
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Grok 4.1 Fast Non Reasoning
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:49:26.091497
+        updated_at: 2026-02-24 05:49:26.852599
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "call_94948622"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Grok 4.1 Fast Reasoning
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:49:26.878617
+        updated_at: 2026-02-24 05:49:31.686831
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_94948622"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e31-e5ad-7d91-819e-aaca5dddc0ac"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Grok 4.1 Fast Non Reasoning
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 05:49:31.697629
+        updated_at: 2026-02-24 05:49:34.15957
+        output: |
+          Hey buddy, I dug into the database for the top movies and pulled out these gems sorted by popularity—looks like the top 10 (or so) recent hits leading the pack! Check out the grid for all the details like posters, release dates, and overviews.\n\n**Deadpool & Wolverine** is killing it with an Average Rating of 7.567 from 8019 votes—pure chaotic fun! **Inside Out 2** is right behind at 7.548 with 6307 votes, perfect emotional rollercoaster. Then you've got **Alien: Romulus** and **Conclave** both rocking 7.2 ratings with solid vote counts around 4000 each. The rest like **The Beekeeper** (7.269) and **Kung Fu Panda 4** (7.025) are crowd-pleasers too. Scroll through for the full top lineup—who's catching your eye first? 🎥🍿
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Grok 4.1 Fast Non Reasoning
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:50:21.462304
+        updated_at: 2026-02-24 05:50:22.379633
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Grok 4.1 Fast Reasoning
+        output_format: json
+        score: 0
+        inserted_at: N/A
+        updated_at: N/A
+        output: ""
+        remark: |
+          The model failed to produce any valid output for this query.
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: grok-4-1-fast
+        output_format: json
+        score: 0
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: grok-4-1-fast
+        output_format: json
+        score: 0
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: grok-4-1-fast
+        output_format: markdown_quote
+        score: 0
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: grok-4-1-fast
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: grok-4-1-fast
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: grok-4-1-fast
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: grok-4-1-fast
+        output_format: json
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: grok-4-1-fast
+        output_format: markdown_quote
+        score:
+        inserted_at: ""
+        updated_at: ""
+        output: ""

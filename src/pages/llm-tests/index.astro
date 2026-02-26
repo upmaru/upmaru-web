@@ -2,12 +2,17 @@
 import Main from "../../layouts/Main.astro";
 import { simpleTamaQ12026Suites } from "../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
 
+const seenProviderIcons = new Set<string>();
 const simpleTamaProviderIcons = simpleTamaQ12026Suites
   .map((suite) => ({
     src: suite.iconSrc,
     alt: suite.iconAlt || `${suite.title} icon`,
   }))
-  .filter((provider) => Boolean(provider.src));
+  .filter((provider) => {
+    if (!provider.src || seenProviderIcons.has(provider.src)) return false;
+    seenProviderIcons.add(provider.src);
+    return true;
+  });
 
 const testRuns = [
   {
@@ -168,7 +173,10 @@ const faqs = [
                     <img
                       src={provider.src}
                       alt={provider.alt}
-                      class="h-6 w-auto"
+                      class:list={[
+                        "h-6 w-auto",
+                        provider.src === "/grok.svg" && "invert",
+                      ]}
                       loading="lazy"
                     />
                   ))}

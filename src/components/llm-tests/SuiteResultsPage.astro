@@ -68,7 +68,7 @@ type TaskTiming = ParsedTask & {
   durationMs: string;
 };
 
-type StepOutput = TaskTiming & {
+type StepOutput = ParsedTask & {
   outputHtml: string | null;
   outputQuoteHtml: string | null;
   remarkHtml: string | null;
@@ -227,13 +227,22 @@ function normalizeEscapedNewlines(value: string) {
   return value.replace(/\\n/g, "\n");
 }
 
-async function renderTaskOutput(task: TaskTiming): Promise<StepOutput> {
+async function renderTaskOutput(task: ParsedTask): Promise<StepOutput> {
   const raw = task.outputRaw.trim();
   const outputFormat = task.outputFormat || "";
   const remarkMarkdown = normalizeEscapedNewlines(task.remarkRaw.trim());
   const remarkHtml = remarkMarkdown.length
     ? await marked.parse(remarkMarkdown)
     : null;
+
+  if (!raw.length) {
+    return {
+      ...task,
+      outputHtml: null,
+      outputQuoteHtml: null,
+      remarkHtml,
+    };
+  }
 
   if (outputFormat === "markdown_quote") {
     const markdown = normalizeEscapedNewlines(raw);
@@ -310,7 +319,9 @@ async function buildTurnView(turnData: ParsedTurn) {
     beforeResponseLatencyMicros !== null
       ? formatDurationMs(beforeResponseLatencyMicros)
       : null;
-  const latencyScoreSummary = summarizeLatencyScore(userWaitingTasks);
+  const latencyScoreSummaryFixed = summarizeLatencyScore(userWaitingTasks, {
+    expectedStepCount: 4,
+  });
   const outputScoreSummary = sumStepScores(taskTimings, {
     fromStep: 1,
     toStep: 5,
@@ -363,7 +374,14 @@ async function buildTurnView(turnData: ParsedTurn) {
       ].join("\n")
     : null;
 
-  const stepOutputs = await Promise.all(taskTimings.map(renderTaskOutput));
+  const stepOutputs = await Promise.all(
+    tasks
+      .filter(
+        (task) =>
+          task.outputRaw.trim().length > 0 || task.remarkRaw.trim().length > 0,
+      )
+      .map(renderTaskOutput),
+  );
 
   return {
     turn: turnData.turn,
@@ -372,7 +390,7 @@ async function buildTurnView(turnData: ParsedTurn) {
     userWaitingTasks,
     postResponseTasks,
     beforeResponseLatencyMs,
-    latencyScoreSummary,
+    latencyScoreSummary: latencyScoreSummaryFixed,
     outputScoreSummary,
     slowestUserWaitingTask,
     slowestUserWaitingSharePct,
@@ -751,12 +769,12 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
                                 class="step-output-quote prose prose-invert mt-3 max-w-none"
                                 set:html={task.outputQuoteHtml}
                               />
-                            ) : (
+                            ) : task.outputHtml ? (
                               <div
                                 class="step-output mt-3 overflow-x-auto"
                                 set:html={task.outputHtml}
                               />
-                            )}
+                            ) : null}
                             {task.remarkHtml && (
                               <div
                                 role="alert"
