@@ -1,0 +1,356 @@
+suite: Kimi K2.5
+youtube: https://www.youtube.com/watch?v=EGEjfCRxYIw
+inference_provider: Fireworks AI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:16.7242
+        updated_at: 2026-02-24 07:44:18.151539
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:18.16828
+        updated_at: 2026-02-24 07:44:22.854665
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:22.865404
+        updated_at: 2026-02-24 07:44:25.067495
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "functions.create-search-result_SearchResultRequest:0"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:25.084835
+        updated_at: 2026-02-24 07:44:28.101056
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "functions.create-search-result_SearchResultRequest:0"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e9b-1eb0-73bc-985c-41b30b6c6b15"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 07:44:28.111102
+        updated_at: 2026-02-24 07:44:36.010271
+        output: |
+          Oh, what a lineup! 🎬 I've pulled the top 10 highest-rated movies from the database, and I have to say—2024 was absolutely *stacked* with crowd-pleasers!\n\nLeading the pack is **The Wild Robot** with an impressive **8.32 Average Rating** from over 5,500 votes. DreamWorks really knocked it out of the park with this one—it's that rare animated gem that made both kids and adults ugly-cry in theaters.\n\nRight behind it is **Dune: Part Two**, sitting pretty with an **8.13 Average Rating**. Denis Villeneuve delivered the sci-fi epic we were all waiting for, and clearly the fans agreed—it's got nearly 7,500 votes backing up that score!\n\nWhat's wild is that **Deadpool & Wolverine** actually has the *highest vote count* of the bunch at over **8,000 votes**, proving that the Merc with a Mouth and everyone's favorite clawed Canadian still have serious drawing power. It landed at #4 with a solid **7.57 Average Rating**.\n\nYou've also got some fantastic variety here—from the emotional rollercoaster of **Inside Out 2** (because who doesn't need more Anxiety in their life?), to the high-octane desert chaos of **Furiosa: A Mad Max Saga**, and even the claustrophobic terror of **Alien: Romulus**.\n\nCheck out the full list above for all the details, including release dates and what each one's about! Any of these catch your eye for movie night? 🍿
+
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:57.219776
+        updated_at: 2026-02-24 07:44:59.676215
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:44:59.693978
+        updated_at: 2026-02-24 07:45:04.17208
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "vector",
+                "intent": "space, outer space, cosmos, astronauts, spacecraft, space station, sci-fi, interstellar, galaxy, universe",
+                "limit": 25,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 0
+        inserted_at: 2026-02-24 07:45:04.187929
+        updated_at: 2026-02-24 07:45:06.91662
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "fc_1e8fd6f5865151006952aa201bd08197b5b"
+            ]
+          }
+        remark: |
+          The `referenced_tool_call_ids` value is in an unexpected format. The correct reference for this run should be `functions.create-search-result_SearchResultRequest:1`.
+
+          This test still completed, but this kind of hallucinated reference can break tool chaining in more complex multi-turn workflows.
+
+          The model appears to have partially copied the prompt example (`fc_091e8fd6f5865151006952aa201bd08197b5b`) instead of using its own actual tool call ID.
+
+          In longer conversations, this mismatch can interrupt artifact linkage and response flow.
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:45:06.935284
+        updated_at: 2026-02-24 07:45:11.75291
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "functions.create-search-result_SearchResultRequest:1"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e9b-bcea-75db-b595-0e620593498b"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 07:45:11.763407
+        updated_at: 2026-02-24 07:45:16.669398
+        output: |
+          Oh, you're looking to blast off into some cosmic cinema? 🚀 I've got you covered! I found a couple of stellar space-bound flicks for you.\n\nFirst up is **Alien: Romulus** — this is a fresh 2024 entry in the legendary Alien franchise with a solid **7.2 Average Rating** from over 4,000 votes. It's set on a derelict space station where a group of young space colonizers come face-to-face with the most terrifying life form in the universe. If you love claustrophobic sci-fi horror with that classic \"space is scary\" vibe, this one's calling your name!\n\nThen there's **Venom: The Last Dance** (also 2024), which has a **6.7 Average Rating**. While the Venom films are more superhero-focused, this installment apparently has some space elements involved with Eddie and Venom being hunted across worlds.\n\nBoth are recent releases, so if you're in the mood for some modern space thrills, these should do the trick! Would you prefer something more classic like *2001: A Space Odyssey* or *Interstellar*, or maybe a space comedy? Just let me know and I can hunt down more options! 🌌
+
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:45:25.380677
+        updated_at: 2026-02-24 07:45:28.035527
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:45:28.060755
+        updated_at: 2026-02-24 07:45:32.680295
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Kimi K2.5
+        output_format: json
+        score: 0
+        inserted_at: 2026-02-24 07:45:32.690494
+        updated_at: 2026-02-24 07:45:34.707743
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "fc_091e8fd6f5865151006952aa201bd08197b5b"
+            ]
+          }
+        remark: |
+          The tool referenced_tool_call_ids here is wrong, it's a copy of what's in the system prompt much like the previous example.
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 07:45:34.72732
+        updated_at: 2026-02-24 07:45:39.356557
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "functions.create-search-result_SearchResultRequest:2"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e9c-2ae2-7e6e-8253-10a447ee9888"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Kimi K2.5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 07:45:39.366955
+        updated_at: 2026-02-24 07:45:46.112912
+        output: |
+          Oh wow, looks like the animation world has been absolutely *dominated* by 2024 releases! 🎬✨\n\nI found **3 top-tier animated movies** (cartoons) that are absolutely crushing it with audiences. Leading the pack is **The Wild Robot** with an impressive **Average Rating of 8.3/10** from over 5,500 votes—this DreamWorks gem about a robot bonding with island animals is clearly resonating with viewers! \n\nFollowing closely is **Inside Out 2**, which has the highest vote count at over 6,300 votes and an **Average Rating of 7.5/10**. Pixar really struck gold again with Riley's emotional rollercoaster! And rounding out our trio is **Kung Fu Panda 4** with a solid **7.0/10** rating—Po's journey continues to delight fans after all these years.\n\nIt's pretty wild that all three of these are from 2024! The animation industry has been absolutely *on fire* this past year. You can check out all the details in the display above—plot summaries, release dates, and those gorgeous posters! 🍿\n\nAny of these catch your eye? I'm personally still thinking about that baby goose in *The Wild Robot*... 🥹
