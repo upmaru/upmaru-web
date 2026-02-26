@@ -1,4 +1,8 @@
 ---
+const loopsFormEndpoint =
+  import.meta.env.PUBLIC_LOOPS_FORM_ENDPOINT ??
+  "https://app.loops.so/api/newsletter-form/cm46nia1902myqjoedjvkq0dg";
+const loopsMailingListId = "cmm31vjaz88ra0i2o0o0laltw";
 const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAACicBbaHrPHs0g29";
 const hasTurnstile = Boolean(turnstileSiteKey);
@@ -29,10 +33,18 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 
       <form
         data-newsletter-form
-        action="/api/newsletter/subscribe"
+        action={loopsFormEndpoint}
         method="post"
         class="mt-8 w-full max-w-xl space-y-4 xl:mt-0"
       >
+        <input type="hidden" name="mailingLists" value={loopsMailingListId} />
+        <input type="hidden" name="source" value="LLM Tests Newsletter" />
+        <input
+          type="hidden"
+          name="cf-turnstile-response"
+          value=""
+          data-turnstile-token
+        />
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
           <label for="newsletter-email" class="sr-only">Email address</label>
           <input
@@ -47,36 +59,23 @@ const hasTurnstile = Boolean(turnstileSiteKey);
           <button
             type="submit"
             class="btn btn-primary sm:btn-wide"
-            disabled={!hasTurnstile}
             data-newsletter-submit
           >
             Notify me
           </button>
         </div>
-
+        <div
+          id="turnstile-container"
+          data-turnstile-container
+          data-sitekey={turnstileSiteKey}
+        >
+        </div>
         {
-          hasTurnstile ? (
-            <>
-              <input
-                type="hidden"
-                name="cf-turnstile-response"
-                value=""
-                data-turnstile-token
-              />
-              <div
-                id="turnstile-container"
-                data-turnstile-container
-                data-sitekey={turnstileSiteKey}
-              />
-            </>
-          ) : (
-            <div
-              role="alert"
-              class="alert alert-warning alert-soft items-start"
-            >
+          !hasTurnstile && (
+            <div role="alert" class="alert alert-warning alert-soft">
               <span>
-                Newsletter captcha is not configured yet. Set{" "}
-                <code>PUBLIC_TURNSTILE_SITE_KEY</code> to enable submissions.
+                Captcha is not configured. Set{" "}
+                <code>PUBLIC_TURNSTILE_SITE_KEY</code>.
               </span>
             </div>
           )
@@ -100,7 +99,6 @@ const hasTurnstile = Boolean(turnstileSiteKey);
     </div>
   </div>
 </section>
-
 {
   hasTurnstile && (
     <script
@@ -120,8 +118,8 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 
     const submitButton = form.querySelector("[data-newsletter-submit]");
     const messageEl = form.querySelector("[data-newsletter-message]");
-    const tokenInput = form.querySelector("[data-turnstile-token]");
     const turnstileContainer = form.querySelector("[data-turnstile-container]");
+    const tokenInput = form.querySelector("[data-turnstile-token]");
     let turnstileWidgetId = null;
 
     const renderTurnstile = () => {
@@ -178,10 +176,19 @@ const hasTurnstile = Boolean(turnstileSiteKey);
       }
 
       try {
+        const formData = new FormData(form);
+        const payload = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+          if (typeof value === "string") payload.append(key, value);
+        }
+
         const response = await fetch(form.action, {
           method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" },
+          body: payload.toString(),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
         });
         const data = await response.json().catch(() => ({}));
 
@@ -202,7 +209,12 @@ const hasTurnstile = Boolean(turnstileSiteKey);
           }
         } else {
           if (messageEl) {
+            const rateLimitMessage =
+              response.status === 429
+                ? "Too many signups. Please try again in a little while."
+                : "";
             messageEl.textContent =
+              rateLimitMessage ||
               data.message ||
               `Could not subscribe (HTTP ${response.status}). Please try again.`;
             messageEl.className = "text-sm text-error";
