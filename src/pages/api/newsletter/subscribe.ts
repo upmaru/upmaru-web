@@ -3,6 +3,8 @@ import type { APIRoute } from "astro";
 const LOOPS_MAILING_LIST_ID = "cmm31vjaz88ra0i2o0o0laltw";
 const DEFAULT_LOOPS_FORM_ENDPOINT =
   "https://app.loops.so/api/newsletter-form/cm46nia1902myqjoedjvkq0dg";
+const TURNSTILE_VERIFY_ENDPOINT =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 function jsonResponse(status: number, body: Record<string, unknown>) {
   return new Response(JSON.stringify(body), {
@@ -28,8 +30,108 @@ function getLoopsFormEndpoint() {
   return DEFAULT_LOOPS_FORM_ENDPOINT;
 }
 
+type ParsedSubscribePayload = {
+  email: string;
+  turnstileToken: string;
+};
+
+async function parseSubscribePayload(
+  request: Request,
+): Promise<ParsedSubscribePayload> {
+  const contentType = request.headers.get("content-type")?.toLowerCase() ?? "";
+
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    const bodyText = await request.text();
+    const params = new URLSearchParams(bodyText);
+    return {
+      email: String(params.get("email") ?? ""),
+      turnstileToken: String(params.get("cf-turnstile-response") ?? ""),
+    };
+  }
+
+  const formData = await request.formData();
+  return {
+    email: String(formData.get("email") ?? ""),
+    turnstileToken: String(formData.get("cf-turnstile-response") ?? ""),
+  };
+}
+
 async function parseJson<T>(response: Response) {
   return (await response.json().catch(() => null)) as T | null;
+}
+
+type TurnstileVerificationResponse = {
+  success?: boolean;
+  "error-codes"?: string[];
+};
+
+async function verifyTurnstileToken(
+  token: string,
+  remoteIp: string | null,
+): Promise<{ ok: boolean; message?: string }> {
+  const secret = import.meta.env.CF_TURNSTILE_SECRET;
+
+  if (!secret) {
+    console.error(
+      "[newsletter/subscribe] missing CF_TURNSTILE_SECRET environment variable",
+    );
+    return {
+      ok: false,
+      message: "Captcha is misconfigured. Please try again later.",
+    };
+  }
+
+  if (!token.trim()) {
+    return {
+      ok: false,
+      message: "Please complete the captcha.",
+    };
+  }
+
+  const body = new URLSearchParams({
+    secret: String(secret),
+    response: token.trim(),
+  });
+
+  if (remoteIp) {
+    body.set("remoteip", remoteIp);
+  }
+
+  let verifyResponse: Response;
+  try {
+    verifyResponse = await fetch(TURNSTILE_VERIFY_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body,
+    });
+  } catch (error) {
+    console.error(
+      "[newsletter/subscribe] turnstile verify request failed",
+      error,
+    );
+    return {
+      ok: false,
+      message: "Could not verify captcha. Please try again.",
+    };
+  }
+
+  const verifyData =
+    await parseJson<TurnstileVerificationResponse>(verifyResponse);
+
+  if (!verifyResponse.ok || !verifyData?.success) {
+    console.warn("[newsletter/subscribe] turnstile verification failed", {
+      status: verifyResponse.status,
+      errors: verifyData?.["error-codes"] ?? [],
+    });
+    return {
+      ok: false,
+      message: "Captcha verification failed. Please try again.",
+    };
+  }
+
+  return { ok: true };
 }
 
 export const GET: APIRoute = async () =>
@@ -40,18 +142,8 @@ export const GET: APIRoute = async () =>
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    let rawEmail = "";
-    const contentType =
-      request.headers.get("content-type")?.toLowerCase() ?? "";
-
-    if (contentType.includes("application/x-www-form-urlencoded")) {
-      const bodyText = await request.text();
-      const params = new URLSearchParams(bodyText);
-      rawEmail = String(params.get("email") ?? "");
-    } else {
-      const formData = await request.formData();
-      rawEmail = String(formData.get("email") ?? "");
-    }
+    const { email: rawEmail, turnstileToken } =
+      await parseSubscribePayload(request);
 
     const email = rawEmail.trim().toLowerCase();
 
@@ -59,6 +151,19 @@ export const POST: APIRoute = async ({ request }) => {
       return jsonResponse(400, {
         success: false,
         message: "Please enter a valid email address.",
+      });
+    }
+
+    const turnstileVerification = await verifyTurnstileToken(
+      turnstileToken,
+      request.headers.get("cf-connecting-ip"),
+    );
+    if (!turnstileVerification.ok) {
+      return jsonResponse(400, {
+        success: false,
+        message:
+          turnstileVerification.message ||
+          "Captcha verification failed. Please try again.",
       });
     }
 
