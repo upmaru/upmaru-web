@@ -3,6 +3,7 @@ import Main from "../../layouts/Main.astro";
 import MermaidChart from "../MermaidChart";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
+  InformationCircleIcon,
   StarHalfIcon,
   StarIcon,
   StarOffIcon,
@@ -50,6 +51,7 @@ type ParsedTurn = {
 
 type ParsedResultsDocument = {
   suite: string;
+  note: string;
   youtubeEmbedUrl: string | null;
   turns: ParsedTurn[];
 };
@@ -162,15 +164,18 @@ function parseResultsDocument(yamlText: string): ParsedResultsDocument {
   if (!parsed || typeof parsed !== "object") {
     return {
       suite: "",
+      note: "",
       youtubeEmbedUrl: null,
       turns: [],
     };
   }
 
   const youtubeRaw = String(parsed.youtube ?? "").trim();
+  const noteRaw = String(parsed.note ?? "").trim();
 
   return {
     suite: String(parsed.suite ?? ""),
+    note: noteRaw,
     youtubeEmbedUrl: youtubeRaw ? toYouTubeEmbedUrl(youtubeRaw) : null,
     turns: parseTurns(parsed),
   };
@@ -428,6 +433,21 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
       }
     </p>
     {
+      parsedResults.note && (
+        <div role="alert" class="alert alert-info alert-soft mt-4 items-start">
+          <HugeiconsIcon
+            icon={InformationCircleIcon}
+            size={20}
+            strokeWidth={1.8}
+          />
+          <div class="w-full">
+            <p class="font-semibold leading-none">Note</p>
+            <div class="mt-1 whitespace-pre-line">{parsedResults.note}</div>
+          </div>
+        </div>
+      )
+    }
+    {
       parsedResults.youtubeEmbedUrl && (
         <div class="mt-8">
           <h2 class="text-xl font-semibold">Run Recording</h2>
@@ -474,7 +494,8 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
 
                   {turnView.mermaidGantt ? (
                     <div class="relative left-1/2 right-1/2 mt-6 -mx-[50vw] w-screen border-y border-base-300 bg-base-100 py-6">
-                      <div class="mx-auto w-full max-w-[1400px] px-6">
+                      <div class="mx-auto w-full max-w-350 px-6">
+                        {" "}
                         <MermaidChart
                           chart={turnView.mermaidGantt}
                           className="suite-results-gantt"

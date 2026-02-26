@@ -1,5 +1,8 @@
 suite: Gemini 3
 youtube: https://www.youtube.com/watch?v=rYoGLDZ6p8c
+note: |
+  Endpoint used: direct Google AI Studio OpenAI-compatible endpoint.
+  Also tested OpenRouter's endpoint, but function calls did not return valid output.
 turns:
   - turn: 1
     message: Can you find me the top 10 movies in the database?
