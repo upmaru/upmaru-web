@@ -17,6 +17,8 @@ import SimpleTamaFlow from "../../../components/llm-tests/simple-tama-flow.js";
 import { summarizeLatencyScore } from "../../../utils/llm-tests/latency";
 import { sumStepScores } from "../../../utils/llm-tests/scoring";
 
+export const prerender = true;
+
 type SummaryTask = {
   id: number;
   score: number | null;
