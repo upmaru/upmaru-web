@@ -827,15 +827,22 @@ const summaryRows = suites.map((suite) => {
 </Main>
 
 <script>
-  const tbody = document.getElementById("suite-summary-body");
-  if (tbody) {
-    const buttons = Array.from(
-      document.querySelectorAll<HTMLButtonElement>("[data-sort-key]"),
-    );
-    let activeKey = "";
-    let direction: "desc" | "asc" = "desc";
+  const initializeSuiteSummarySorting = () => {
+    const tbody = document.getElementById("suite-summary-body");
+    if (!tbody || tbody.dataset.sortingInitialized === "true") return;
 
-    const sortRows = (key: string) => {
+    const table = tbody.closest("table");
+    if (!table) return;
+
+    const buttons = Array.from(table.querySelectorAll("[data-sort-key]"));
+    if (buttons.length === 0) return;
+
+    tbody.dataset.sortingInitialized = "true";
+
+    let activeKey = "";
+    let direction = "desc";
+
+    const sortRows = (key) => {
       if (activeKey === key) {
         direction = direction === "desc" ? "asc" : "desc";
       } else {
@@ -859,15 +866,9 @@ const summaryRows = suites.map((suite) => {
       buttons.forEach((button) => {
         const isActive = button.dataset.sortKey === activeKey;
         const label = button.dataset.label || "score";
-        const unsortedIcon = button.querySelector<HTMLElement>(
-          "[data-sort-icon-unsorted]",
-        );
-        const descIcon = button.querySelector<HTMLElement>(
-          "[data-sort-icon-desc]",
-        );
-        const ascIcon = button.querySelector<HTMLElement>(
-          "[data-sort-icon-asc]",
-        );
+        const unsortedIcon = button.querySelector("[data-sort-icon-unsorted]");
+        const descIcon = button.querySelector("[data-sort-icon-desc]");
+        const ascIcon = button.querySelector("[data-sort-icon-asc]");
 
         if (isActive) {
           unsortedIcon?.classList.add("hidden");
@@ -878,6 +879,7 @@ const summaryRows = suites.map((suite) => {
           descIcon?.classList.add("hidden");
           ascIcon?.classList.add("hidden");
         }
+
         button.setAttribute(
           "aria-label",
           isActive
@@ -895,5 +897,8 @@ const summaryRows = suites.map((suite) => {
     });
 
     sortRows("overallScoreSort");
-  }
+  };
+
+  document.addEventListener("astro:page-load", initializeSuiteSummarySorting);
+  initializeSuiteSummarySorting();
 </script>
