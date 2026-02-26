@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node ./scripts/write-assetsignore.mjs",
     "preview": "npm run build && wrangler dev",
     "preview:astro": "astro preview",
     "deploy": "wrangler deploy --experimental-autoconfig=false --config wrangler.jsonc",
