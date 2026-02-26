@@ -216,7 +216,7 @@ const nodes: Node[] = [
 export default function ProductFlow() {
   return (
     <div className="w-full border-y border-base-300 bg-base-100">
-      <div className="relative h-[28rem] w-full">
+      <div className="relative h-112 w-full">
         <ReactFlow
           nodes={nodes}
           edges={edges}
