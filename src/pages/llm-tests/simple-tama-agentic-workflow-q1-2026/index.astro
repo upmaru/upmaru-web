@@ -22,6 +22,7 @@ type SummaryTurn = {
 
 type SuiteScoreSummary = {
   suite: string;
+  inferenceProvider: string;
   totalTurns: number;
   outputScoredTurns: number;
   latencyScoredTurns: number;
@@ -133,6 +134,7 @@ function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
   if (!parsed || typeof parsed !== "object") {
     return {
       suite: "",
+      inferenceProvider: "",
       totalTurns: 0,
       outputScoredTurns: 0,
       latencyScoredTurns: 0,
@@ -181,6 +183,7 @@ function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
 
   return {
     suite: String(parsed.suite ?? ""),
+    inferenceProvider: String(parsed.inference_provider ?? "").trim(),
     totalTurns: turns.length,
     outputScoredTurns: outputScores.length,
     latencyScoredTurns: latencyScores.length,
@@ -253,6 +256,7 @@ const summaryRows = suites.map((suite) => {
     href: `/llm-tests/simple-tama-agentic-workflow-q1-2026/${suite.slug}`,
     iconSrc: suite.iconSrc,
     iconAlt: suite.iconAlt || `${suite.title} icon`,
+    inferenceProviderText: score?.inferenceProvider || "-",
     outputScore,
     latencyScore,
     outputScoreText: formatOutOfTen(outputScore),
@@ -414,6 +418,7 @@ const summaryRows = suites.map((suite) => {
                     </button>
                   </div>
                 </th>
+                <th>Inference Provider</th>
                 <th>
                   <div class="inline-flex items-center gap-1">
                     <span>Latency Score</span>
@@ -460,6 +465,7 @@ const summaryRows = suites.map((suite) => {
                         </a>
                       </td>
                       <td class="font-mono">{row.outputScoreText}</td>
+                      <td>{row.inferenceProviderText}</td>
                       <td class="font-mono">{row.latencyScoreText}</td>
                       <td class="text-sm text-base-content/75">
                         {row.turnsText}

@@ -1,0 +1,346 @@
+suite: GLM 5
+youtube: https://www.youtube.com/watch?v=2FLnZB3nXS8
+inference_provider: Fireworks AI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:02.18092
+        updated_at: 2026-02-24 05:03:03.25266
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.96,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:03.273017
+        updated_at: 2026-02-24 05:03:17.672156
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:17.684161
+        updated_at: 2026-02-24 05:03:18.854896
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-9f8aaa808b8951ba"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:18.870719
+        updated_at: 2026-02-24 05:03:24.776164
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-9f8aaa808b8951ba"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e07-7f86-76c7-96d7-0c03bc37f91d"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 05:03:24.787118
+        updated_at: 2026-02-24 05:03:32.324635
+        output: |
+          Oh, now THIS is a fantastic lineup! 🎬✨\n\nI found the top 10 highest-rated movies in the database (filtered for movies with at least 500 votes to keep things legit). And wow – what a list!\n\n**The Wild Robot** takes the crown with an impressive **8.3 average rating** from over 5,500 votes! This animated gem about a shipwrecked robot learning to survive and care for an orphaned goose has clearly captured hearts.\n\n**Dune: Part Two** follows close behind with an **8.1 average rating** and nearly 7,500 votes – Denis Villeneuve's epic conclusion to the first part is clearly delivering on all that sandworm-sized hype!\n\nWhat's really interesting is that *all* of these top films are from 2024 – we've got **Sonic the Hedgehog 3** bringing the blue blur back, **Deadpool & Wolverine** teaming up Marvel's favorite mutants, **Inside Out 2** exploring new emotions, and **Furiosa: A Mad Max Saga** revving up the prequel engine!\n\nThe list also includes action hits like **Bad Boys: Ride or Die**, **The Beekeeper**, the sci-fi horror **Alien: Romulus**, and the Vatican thriller **Conclave** – quite the variety!\n\nCheck out the display above for all 10 movies with their ratings and release dates. Anything here catch your eye that you'd like to know more about? 🍿
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:44.668471
+        updated_at: 2026-02-24 05:03:49.234818
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.97,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:49.256013
+        updated_at: 2026-02-24 05:03:54.97322
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "vector",
+                "intent": [
+                  "space exploration, outer space, astronauts, spacecraft, sci-fi space adventure, interstellar, galactic"
+                ],
+                "limit": 25,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:55.000551
+        updated_at: 2026-02-24 05:03:56.298868
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-ad62ae97f4befc61"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:03:56.316818
+        updated_at: 2026-02-24 05:04:06.491215
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-ad62ae97f4befc61"
+                ],
+                "type": "detail",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e08-257f-7581-92ae-5f360d8ecade"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 05:04:06.50242
+        updated_at: 2026-02-24 05:04:12.279831
+        output: |
+          Oh, I love a good space movie! 🚀👽\n\nI found one for you — **Alien: Romulus**! This one is a fantastic pick if you're looking for some deep-space thrills. It's the latest entry in the legendary Alien franchise, released on **August 13, 2024**.\n\nThe story follows a group of young space colonizers scavenging a derelict space station when they encounter... well, *the most terrifying life form in the universe*. Classic Alien vibes! It's got a solid **Average Rating of 7.2** from over **4,144 votes**, so audiences are definitely digging it.\n\nIt's perfect if you want that mix of sci-fi atmosphere and spine-tingling horror in the cold vacuum of space. Check out the details I pulled up for you! 🎬\n\nWould you like me to search for more space-themed movies, maybe something less terrifying? Perhaps sci-fi adventure or space exploration films?
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:04:27.223102
+        updated_at: 2026-02-24 05:04:28.792295
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:04:28.81326
+        updated_at: 2026-02-24 05:04:33.057672
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:04:33.06782
+        updated_at: 2026-02-24 05:04:34.589309
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.97,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-a4f758f2d8831c6b"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-24 05:04:34.605939
+        updated_at: 2026-02-24 05:04:39.026307
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-a4f758f2d8831c6b"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e08-cbb6-74fb-aded-72a0c38447ac"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GLM 5
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-24 05:04:39.037746
+        updated_at: 2026-02-24 05:04:45.495328
+        output: |
+          Oh, you're in for a treat! 🎬✨ I found some fantastic animated films for you!\n\nTaking the top spot is **The Wild Robot** with an impressive **Average Rating of 8.3** and over **5,500 votes**! This beautiful film about a robot named Roz stranded on an island is really capturing hearts. It came out in **September 2024**, so it's pretty fresh!\n\nClose behind is **Inside Out 2**, the emotional sequel we've been waiting for! It scored a solid **7.5 Average Rating** with a whopping **6,300+ votes** – that's some serious audience love! Riley's mind headquarters is getting some new visitors, and it looks like Anxiety is crashing the party!\n\nAnd rounding out the top picks is **Kung Fu Panda 4**! Our favorite panda Po is back with a **7.0 Average Rating** and over **3,300 votes**. He's training a new Dragon Warrior while facing off against a shapeshifting villain. Classic Po vibes!\n\nCheck out the grid display above for the posters and more details! 🐼🤖🎭\n\nAnything here catch your eye, or are you looking for a specific type of animated adventure?

@@ -1,0 +1,20 @@
+---
+import SuiteResultsPage from "../../../../components/llm-tests/SuiteResultsPage.astro";
+import resultsYaml from "../../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/glm-5/results.yml?raw";
+
+const site = Astro.site ?? new URL("https://upmaru.com");
+const pageImage = new URL(
+  "/llm-tests/simple-tama-agentic-workflow-q1-2026/glm-5.png",
+  site,
+).toString();
+---
+
+<SuiteResultsPage
+  pageTitle="GLM 5 | Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
+  pageDescription="GLM 5 results for the Simple Tama Agentic Workflow Q1 2026 test run."
+  pageImage={pageImage}
+  backHref="/llm-tests/simple-tama-agentic-workflow-q1-2026/"
+  fallbackSuiteName="GLM 5"
+  resultsYaml={resultsYaml}
+  summaryText="Output and timing analysis for the GLM 5 suite in the agentic workflow."
+/>

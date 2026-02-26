@@ -38,6 +38,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/gemini-color.svg",
     iconAlt: "Gemini 3 icon",
   },
+  {
+    slug: "glm-5",
+    title: "GLM 5",
+    description: "Placeholder test scaffold for GLM 5 in an agentic workflow",
+    iconSrc: "/zai-logo.svg",
+    iconAlt: "Z.ai logo",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {
