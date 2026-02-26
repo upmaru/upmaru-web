@@ -524,7 +524,25 @@ const summaryRows = suites.map((suite) => {
                           {row.title}
                         </a>
                       </td>
-                      <td class="font-mono">{row.overallScoreText}</td>
+                      <td
+                        class:list={[
+                          "font-mono",
+                          typeof row.overallScore !== "number" &&
+                            "text-base-content/40",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore > 8 &&
+                            "text-success",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore > 6 &&
+                            row.overallScore <= 8 &&
+                            "text-warning",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore <= 6 &&
+                            "text-error",
+                        ]}
+                      >
+                        {row.overallScoreText}
+                      </td>
                       <td class="font-mono">{row.outputScoreText}</td>
                       <td>{row.inferenceProviderText}</td>
                       <td class="font-mono">{row.latencyScoreText}</td>
@@ -599,6 +617,6 @@ const summaryRows = suites.map((suite) => {
       });
     });
 
-    sortRows("latencyScoreSort");
+    sortRows("overallScoreSort");
   }
 </script>

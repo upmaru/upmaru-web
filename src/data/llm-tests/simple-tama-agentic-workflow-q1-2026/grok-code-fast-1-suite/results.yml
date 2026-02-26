@@ -8,141 +8,339 @@ turns:
       - id: 1
         name: routing
         chain: Chat Router
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:10:16.858781
+        updated_at: 2026-02-24 06:10:18.148167
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
       - id: 2
         name: query-database
         chain: Chat Media Search
-        model: grok-code-fast-1
+        model: Grok Code Fast 1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:10:18.169636
+        updated_at: 2026-02-24 06:10:31.97889
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "limit": 10,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:10:31.989616
+        updated_at: 2026-02-24 06:10:32.804707
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "call_30936740"
+            ]
+          }
       - id: 4
         name: create-artifact
         chain: Memovee Chat Response with Artifact
-        model: grok-code-fast-1
+        model: Grok Code Fast 1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:10:32.82283
+        updated_at: 2026-02-24 06:10:43.645244
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_30936740"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e45-0fe7-7256-be25-9d4915f2ed3f"
+            }
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: markdown_quote
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:10:43.655881
+        updated_at: 2026-02-24 06:10:46.943035
+        output: |
+          Hey buddy, I dug into the database and pulled the top 10 highest-rated movies right now, sorted by average rating (with a solid number of votes to back it up, at least 500 each). Check out the grid for all the details like posters, release dates starting from September 12, 2024 for *The Wild Robot*, and those juicy overviews.\n\nWow, *The Wild Robot* is leading the pack with an incredible Average Rating of 8.318 from 5,561 votes—heartwarming robot vibes on an island! *Dune: Part Two* is right behind at 8.131 from 7,469 votes, epic sci-fi revenge. Then you've got *Sonic the Hedgehog 3* at 7.64 (3,082 votes), *Deadpool & Wolverine* crushing it with 7.567 from a whopping 8,019 votes—superhero chaos at its finest. The rest like *Inside Out 2*, *Furiosa*, and more are all over 7.2 with thousands of votes each. Total blast of 2024 hits! What do you think of these, or want recs based on one? 🎥🍿
   - turn: 2
     message: Can you find me movies that take place in space?
     tasks:
       - id: 1
         name: routing
         chain: Chat Router
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:03.506189
+        updated_at: 2026-02-24 06:11:04.408712
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
       - id: 2
         name: query-database
         chain: Chat Media Search
-        model: grok-code-fast-1
+        model: Grok Code Fast 1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:04.432182
+        updated_at: 2026-02-24 06:11:16.96599
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "intent": [
+                  "space exploration, sci-fi adventure, astronauts, alien worlds, interstellar travel, cosmic battles, futuristic technology"
+                ],
+                "limit": 25,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "vector"
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:16.983958
+        updated_at: 2026-02-24 06:11:17.82646
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "call_54467192"
+            ]
+          }
       - id: 4
         name: create-artifact
         chain: Memovee Chat Response with Artifact
-        model: grok-code-fast-1
+        model: Grok Code Fast 1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:17.847184
+        updated_at: 2026-02-24 06:11:28.336656
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_54467192"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e45-c63a-78cc-a72c-656e82893e65"
+            }
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: markdown_quote
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:28.347754
+        updated_at: 2026-02-24 06:11:31.236117
+        output: |
+          Hey buddy, space movies? Now we're talking my language—nothing beats those epic cosmic vibes! I dug up some stellar picks that dive right into space settings, sorted by top ratings and popularity. Check out the display for the full deets on posters, ratings, and more, but here's the quick scoop on the top ones:\n\n- **Dune: Part Two** is crushing it with an Average Rating of 8.131 from 7,469 votes—pure interstellar epicness.\n- **Alien: Romulus** clocks in at 7.2 from 4,144 votes, all about that creepy derelict space station horror.\n- **Venom: The Last Dance** has a 6.672 rating from 3,899 votes, with symbiote chaos across the stars.\n\nThe rest are in the grid too—perfect for your next binge. Got a fave genre twist like horror or action in space, or an actor you love? Hit me up for more tailored recs! 🚀
   - turn: 3
     message: Can you find me the top cartoons?
     tasks:
       - id: 1
         name: routing
         chain: Chat Router
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:48.514191
+        updated_at: 2026-02-24 06:11:49.303212
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
       - id: 2
         name: query-database
         chain: Chat Media Search
         model: grok-code-fast-1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:49.323355
+        updated_at: 2026-02-24 06:11:59.961038
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "limit": 25,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
-        model: grok-4-1-fast
+        model: Grok 4.1 Fast Non Reasoning
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:11:59.970828
+        updated_at: 2026-02-24 06:12:00.732461
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "call_75903164"
+            ]
+          }
       - id: 4
         name: create-artifact
         chain: Memovee Chat Response with Artifact
         model: grok-code-fast-1
         output_format: json
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:12:00.748645
+        updated_at: 2026-02-24 06:12:10.081531
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_75903164"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019c8e46-7603-7186-bbb8-532157af12a3"
+            }
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
         model: grok-4-1-fast
         output_format: markdown_quote
-        score:
-        inserted_at: ""
-        updated_at: ""
-        output: ""
+        score: 2
+        inserted_at: 2026-02-24 06:12:10.093039
+        updated_at: 2026-02-24 06:12:12.674081
+        output: |
+          Hey buddy, I dug up the top animated movies (aka cartoons!) based on average ratings and solid vote counts—perfect for some fun vibes. Check out the display for the full deets on the top picks like *The Wild Robot* with its stellar 8.3 Average Rating from over 5,500 votes, *Inside Out 2* rocking a 7.5 from nearly 6,300 fans, and *Kung Fu Panda 4* at 7.0. These are the heavy hitters right now—super fresh releases too! What kinda cartoons are you craving, like family fun or something more adventurous?
