@@ -434,46 +434,44 @@ const summaryRows = suites.map((suite) => {
           Key findings and results summary in a single rankings table.
         </p>
         <div role="alert" class="alert alert-info alert-soft mt-3">
-          <div class="space-y-2">
+          <div>
             <p>
               <strong>Overall Score</strong> is a weighted blend of quality and speed:
               <code>70% Output Score + 30% Latency Score</code>. This puts more
               emphasis on output correctness while still rewarding faster
               responses.
             </p>
-            <div class="space-y-1">
-              <p><strong>Latency Feel Guide</strong></p>
-              <div class="flex flex-wrap items-center gap-2 text-sm">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-1 text-success"
-                >
-                  <HugeiconsIcon icon={AngelIcon} size={18} strokeWidth={1.8} />
-                  <span><code>&gt; 8</code> Fast</span>
-                </span>
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-1 text-warning"
-                >
-                  <HugeiconsIcon
-                    icon={ConfusedIcon}
-                    size={18}
-                    strokeWidth={1.8}
-                  />
-                  <span
-                    ><code>&gt; 6 and &lt;= 8</code> Acceptable (Slightly slow)</span
-                  >
-                </span>
-                <span
-                  class="inline-flex items-center gap-1 rounded-full bg-error/15 px-2 py-1 text-error"
-                >
-                  <HugeiconsIcon
-                    icon={DispleasedIcon}
-                    size={18}
-                    strokeWidth={1.8}
-                  />
-                  <span><code>&lt;= 6</code> Almost unusable</span>
-                </span>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div
+          class="mt-3 rounded-box border border-base-content/10 bg-base-100 p-4"
+        >
+          <p class="font-semibold">Latency Feel Guide</p>
+          <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-1 text-success"
+            >
+              <HugeiconsIcon icon={AngelIcon} size={18} strokeWidth={1.8} />
+              <span><code>&gt; 8</code> Fast</span>
+            </span>
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-1 text-warning"
+            >
+              <HugeiconsIcon icon={ConfusedIcon} size={18} strokeWidth={1.8} />
+              <span
+                ><code>&gt; 6 and &lt;= 8</code> Acceptable (Slightly slow)</span
+              >
+            </span>
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-error/15 px-2 py-1 text-error"
+            >
+              <HugeiconsIcon
+                icon={DispleasedIcon}
+                size={18}
+                strokeWidth={1.8}
+              />
+              <span><code>&lt;= 6</code> Almost unusable</span>
+            </span>
           </div>
         </div>
         <div
