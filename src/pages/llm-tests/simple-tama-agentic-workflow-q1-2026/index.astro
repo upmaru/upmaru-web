@@ -443,41 +443,130 @@ const summaryRows = suites.map((suite) => {
             </p>
           </div>
         </div>
-        <div
-          class="mt-3 rounded-box border border-base-content/10 bg-base-100 p-4"
-        >
-          <p class="font-semibold">Latency Feel Guide</p>
-          <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
-            <span
-              class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-1 text-success"
-            >
-              <HugeiconsIcon icon={AngelIcon} size={18} strokeWidth={1.8} />
-              <span><code>&gt; 8</code> Fast</span>
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-1 text-warning"
-            >
-              <HugeiconsIcon icon={ConfusedIcon} size={18} strokeWidth={1.8} />
-              <span
-                ><code>&gt; 6 and &lt;= 8</code> Acceptable (Slightly slow)</span
-              >
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-full bg-error/15 px-2 py-1 text-error"
-            >
-              <HugeiconsIcon
-                icon={DispleasedIcon}
-                size={18}
-                strokeWidth={1.8}
-              />
-              <span><code>&lt;= 6</code> Almost unusable</span>
-            </span>
+        <div class="mt-3 grid gap-3 md:grid-cols-2">
+          <div
+            class="rounded-box border border-base-content/10 bg-base-100 p-4"
+          >
+            <p class="font-semibold">Output Score Guide</p>
+            <div class="mt-2 overflow-x-auto">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th class="text-center">Rating</th>
+                    <th>Range</th>
+                    <th>Remark</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="w-16 text-center text-success">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={AngelIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>9.1 - 10.0</code></td>
+                    <td>Likely works well for multi-turn agentic chat.</td>
+                  </tr>
+                  <tr>
+                    <td class="w-16 text-center text-warning">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={ConfusedIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>8.1 - 9.0</code></td>
+                    <td
+                      >Can partially work, or be made to work well with some
+                      prompt engineering.</td
+                    >
+                  </tr>
+                  <tr>
+                    <td class="w-16 text-center text-error">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={DispleasedIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>0.0 - 8.0</code></td>
+                    <td>Should not be used for agentic systems.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="rounded-box border border-base-content/10 bg-base-100 p-4"
+          >
+            <p class="font-semibold">Latency Feel Guide</p>
+            <div class="mt-2 overflow-x-auto">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th class="text-center">Rating</th>
+                    <th>Range</th>
+                    <th>Remark</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="w-16 text-center text-success">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={AngelIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>8.1 - 10.0</code></td>
+                    <td>Feels Fast and pleasant to use.</td>
+                  </tr>
+                  <tr>
+                    <td class="w-16 text-center text-warning">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={ConfusedIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>6.1 - 8.0</code></td>
+                    <td>Acceptable, but slightly slow.</td>
+                  </tr>
+                  <tr>
+                    <td class="w-16 text-center text-error">
+                      <div class="flex items-center justify-center">
+                        <HugeiconsIcon
+                          icon={DispleasedIcon}
+                          size={18}
+                          strokeWidth={1.8}
+                        />
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap"><code>0.0 - 6.0</code></td>
+                    <td>Almost unusable.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div
           class="mt-4 overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
         >
-          <table class="table">
+          <table class="table table-zebra">
             <thead>
               <tr>
                 <th></th>
@@ -582,7 +671,25 @@ const summaryRows = suites.map((suite) => {
                       >
                         {row.overallScoreText}
                       </td>
-                      <td class="font-mono">{row.outputScoreText}</td>
+                      <td
+                        class:list={[
+                          "font-mono",
+                          typeof row.outputScore !== "number" &&
+                            "text-base-content/40",
+                          typeof row.outputScore === "number" &&
+                            row.outputScore > 9 &&
+                            "text-success",
+                          typeof row.outputScore === "number" &&
+                            row.outputScore > 8 &&
+                            row.outputScore <= 9 &&
+                            "text-warning",
+                          typeof row.outputScore === "number" &&
+                            row.outputScore <= 8 &&
+                            "text-error",
+                        ]}
+                      >
+                        {row.outputScoreText}
+                      </td>
                       <td>{row.inferenceProviderText}</td>
                       <td
                         class:list={[

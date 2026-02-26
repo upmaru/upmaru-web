@@ -41,9 +41,16 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
   {
     slug: "glm-5",
     title: "GLM 5",
-    description: "Placeholder test scaffold for GLM 5 in an agentic workflow",
+    description: "Test for GLM 5 model in an agentic workflow",
     iconSrc: "/zai-logo.svg",
     iconAlt: "Z.ai logo",
+  },
+  {
+    slug: "kimi-k-2-5",
+    title: "Kimi K2.5",
+    description: "Test for Kimi K2.5 model in an agentic workflow",
+    iconSrc: "/kimi-color.svg",
+    iconAlt: "Kimi icon",
   },
   {
     slug: "grok-4-1-fast",
