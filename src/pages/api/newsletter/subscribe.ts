@@ -68,10 +68,9 @@ type TurnstileVerificationResponse = {
 async function verifyTurnstileToken(
   token: string,
   remoteIp: string | null,
+  secret: string,
 ): Promise<{ ok: boolean; message?: string }> {
-  const secret = import.meta.env.CF_TURNSTILE_SECRET;
-
-  if (!secret) {
+  if (!secret.trim()) {
     console.error(
       "[newsletter/subscribe] missing CF_TURNSTILE_SECRET environment variable",
     );
@@ -134,13 +133,28 @@ async function verifyTurnstileToken(
   return { ok: true };
 }
 
+type RuntimeLocals = {
+  runtime?: {
+    env?: Record<string, unknown>;
+  };
+};
+
+function getTurnstileSecret(locals: RuntimeLocals): string {
+  const runtimeSecret =
+    typeof locals.runtime?.env?.CF_TURNSTILE_SECRET === "string"
+      ? locals.runtime.env.CF_TURNSTILE_SECRET
+      : "";
+
+  return runtimeSecret || import.meta.env.CF_TURNSTILE_SECRET || "";
+}
+
 export const GET: APIRoute = async () =>
   jsonResponse(405, {
     success: false,
     message: "Method not allowed. Use POST.",
   });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const { email: rawEmail, turnstileToken } =
       await parseSubscribePayload(request);
@@ -154,9 +168,12 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    const configuredSecret = getTurnstileSecret(locals as RuntimeLocals);
+
     const turnstileVerification = await verifyTurnstileToken(
       turnstileToken,
       request.headers.get("cf-connecting-ip"),
+      configuredSecret,
     );
     if (!turnstileVerification.ok) {
       return jsonResponse(400, {
