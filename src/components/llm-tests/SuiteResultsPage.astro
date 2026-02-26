@@ -474,7 +474,8 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
 
                   {turnView.mermaidGantt ? (
                     <div class="relative left-1/2 right-1/2 mt-6 -mx-[50vw] w-screen border-y border-base-300 bg-base-100 py-6">
-                      <div class="mx-auto w-full max-w-[1400px] px-6">
+                      <div class="mx-auto w-full max-w-350 px-6">
+                        {" "}
                         <MermaidChart
                           chart={turnView.mermaidGantt}
                           className="suite-results-gantt"
