@@ -203,7 +203,8 @@ const hasTurnstile = Boolean(turnstileSiteKey);
         } else {
           if (messageEl) {
             messageEl.textContent =
-              data.message || "Could not subscribe. Please try again.";
+              data.message ||
+              `Could not subscribe (HTTP ${response.status}). Please try again.`;
             messageEl.className = "text-sm text-error";
           }
         }
