@@ -1,11 +1,8 @@
 ---
-const loopsFormEndpoint =
-  import.meta.env.PUBLIC_LOOPS_FORM_ENDPOINT ??
-  "https://app.loops.so/api/newsletter-form/cm46nia1902myqjoedjvkq0dg";
-const loopsMailingListId = "cmm31vjaz88ra0i2o0o0laltw";
 const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAACicBbaHrPHs0g29";
 const hasTurnstile = Boolean(turnstileSiteKey);
+const subscribeEndpoint = "/api/newsletter/subscribe";
 ---
 
 <section
@@ -33,12 +30,10 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 
       <form
         data-newsletter-form
-        action={loopsFormEndpoint}
+        action={subscribeEndpoint}
         method="post"
         class="mt-8 w-full max-w-xl space-y-4 xl:mt-0"
       >
-        <input type="hidden" name="mailingLists" value={loopsMailingListId} />
-        <input type="hidden" name="source" value="LLM Tests Newsletter" />
         <input
           type="hidden"
           name="cf-turnstile-response"

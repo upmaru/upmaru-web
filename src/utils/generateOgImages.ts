@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { extname, join } from "node:path";
-import { Resvg } from "@resvg/resvg-js";
 import type { CollectionEntry } from "astro:content";
 import satori, { type SatoriOptions } from "satori";
 import llmTestOgImage from "./og-templates/llm-test";
@@ -57,7 +56,20 @@ const options: SatoriOptions = {
   ],
 };
 
-function svgBufferToPngBuffer(svg: string) {
+let ResvgCtor: (typeof import("@resvg/resvg-js"))["Resvg"] | null = null;
+
+async function getResvg() {
+  if (!ResvgCtor) {
+    const modulePath = require.resolve("@resvg/resvg-js");
+    const resvgModule = await import(/* @vite-ignore */ modulePath);
+    ResvgCtor = resvgModule.Resvg;
+  }
+
+  return ResvgCtor;
+}
+
+async function svgBufferToPngBuffer(svg: string) {
+  const Resvg = await getResvg();
   const resvg = new Resvg(svg);
   const pngData = resvg.render();
   return pngData.asPng();
@@ -110,12 +122,12 @@ async function resolvePostOgIcon(iconName?: string): Promise<IconNode[]> {
 export async function generateOgImageForPost(post: CollectionEntry<"blog">) {
   const icon = await resolvePostOgIcon(post.data.icon);
   const svg = await satori(postOgImage(post, icon), options);
-  return svgBufferToPngBuffer(svg);
+  return await svgBufferToPngBuffer(svg);
 }
 
 export async function generateOgImageForSite() {
   const svg = await satori(siteOgImage(), options);
-  return svgBufferToPngBuffer(svg);
+  return await svgBufferToPngBuffer(svg);
 }
 
 type LlmTestOgImageInput = {
@@ -141,7 +153,7 @@ export async function generateOgImageForLlmTest({
     }),
     options,
   );
-  return svgBufferToPngBuffer(svg);
+  return await svgBufferToPngBuffer(svg);
 }
 
 type LlmTestRunOgImageInput = {
@@ -169,5 +181,5 @@ export async function generateOgImageForLlmTestRun({
     }),
     options,
   );
-  return svgBufferToPngBuffer(svg);
+  return await svgBufferToPngBuffer(svg);
 }

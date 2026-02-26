@@ -2,6 +2,8 @@
 import SuiteResultsPage from "../../../../components/llm-tests/SuiteResultsPage.astro";
 import resultsYaml from "../../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/glm-5/results.yml?raw";
 
+export const prerender = true;
+
 const site = Astro.site ?? new URL("https://upmaru.com");
 const pageImage = new URL(
   "/llm-tests/simple-tama-agentic-workflow-q1-2026/glm-5.png",

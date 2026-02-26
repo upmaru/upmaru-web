@@ -3,6 +3,8 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Main from "../../layouts/Main.astro";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
@@ -70,6 +72,13 @@ const ogImage = post.data.ogImage
     </div>
   </article>
 </Main>
+
+<script>
+  import mermaid from "mermaid";
+
+  mermaid.initialize({ startOnLoad: false });
+  mermaid.run({ querySelector: "pre.mermaid" });
+</script>
 
 <style is:global>
   article .prose pre.mermaid {
