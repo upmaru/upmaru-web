@@ -1,0 +1,336 @@
+suite: Gemini 3
+youtube: https://www.youtube.com/watch?v=rYoGLDZ6p8c
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:08.64926
+        updated_at: 2026-02-23 14:36:10.739644
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:10.762921
+        updated_at: 2026-02-23 14:36:14.063713
+        output: |
+          {
+            "next": null,
+            "body": {
+              "search": {
+                "type": "all",
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "direction": "desc",
+                    "by": "vote_count"
+                  }
+                ],
+                "limit": 10,
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ]
+              }
+            }
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:14.074015
+        updated_at: 2026-02-23 14:36:15.885669
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "function-call-9731645355340705867"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:15.906061
+        updated_at: 2026-02-23 14:36:17.55125
+        output: |
+          {
+            "path": {
+              "message_id": "019c8aed-d5ad-72a4-b93b-9526eb9e9036"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "function-call-9731645355340705867"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 14:36:17.561816
+        updated_at: 2026-02-23 14:36:19.568932
+        output: |
+          Lights, camera, action! I've scouted the database to find the top 10 movies based on their ratings and popularity. \n\nIt looks like **The Wild Robot** is currently leading the pack with a fantastic **Average Rating** of **8.318** from **5,561** votes! Close on its heels is the epic **Dune: Part Two**, which has an impressive **Average Rating** of **8.131** and a massive **Number of Votes** at **7,469**.\n\nI also found some other big hits like:\n*   **Sonic the Hedgehog 3** (Average Rating: **7.64**)\n*   **Deadpool & Wolverine** (Average Rating: **7.567**)\n*   **Inside Out 2** (Average Rating: **7.548**)\n\nYou can see the full list of these cinematic gems in the display. It's a great mix of animation, sci-fi, and high-octane action! Which one are you in the mood for tonight?
+
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:30.525554
+        updated_at: 2026-02-23 14:36:32.5202
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:32.539379
+        updated_at: 2026-02-23 14:36:36.802605
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "intent": "space exploration, astronauts, galactic travel, alien planets, starships",
+                "filter": [
+                  {
+                    "value": {
+                      "from": 100
+                    },
+                    "type": "range",
+                    "by": "vote_count"
+                  }
+                ],
+                "type": "vector",
+                "limit": 25
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:36.822515
+        updated_at: 2026-02-23 14:36:39.082583
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "function-call-4354934469264389705"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:39.099348
+        updated_at: 2026-02-23 14:36:40.930495
+        output: |
+          {
+            "next": null,
+            "path": {
+              "message_id": "019c8aee-2b29-7521-bd6a-4b34953ecdcc"
+            },
+            "body": {
+              "artifact": {
+                "index": 0,
+                "type": "grid",
+                "references": [
+                  "function-call-4354934469264389705"
+                ]
+              }
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 14:36:40.940196
+        updated_at: 2026-02-23 14:36:44.339065
+        output: |
+          Buckle up, space cadet! We’re heading into the great unknown! 🚀\n\nI've scanned the galaxy and found a fantastic recent addition to the legendary *Alien* franchise for you. Exploring deep space is always a thrill, though in this case, it’s a bit of a nightmare for the crew involved!\n\nI've pulled up **Alien: Romulus**, which takes us back to that gritty, industrial space aesthetic we all love. It's been a huge hit with fans, boasting an **Average Rating of 7.2** from over **4,144 votes**! It’s a wild ride that proves that in space, everyone can still hear you scream if you’re close enough to a Xenomorph.\n\nCheck out the details I've gathered for you:\n\n*   **Alien: Romulus** – Released on **August 13, 2024**, this film follows a group of young colonizers who bite off a bit more than they can chew while scavenging a derelict space station.\n\nDid you have a specific vibe in mind? I can look for more \"realistic\" NASA-style missions or maybe some epic space operas if you're in the mood for some laser sword action!
+
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:54.278664
+        updated_at: 2026-02-23 14:36:56.340985
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:56.36098
+        updated_at: 2026-02-23 14:36:59.727681
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "value": {
+                      "from": 500
+                    },
+                    "type": "range",
+                    "by": "vote_count"
+                  },
+                  {
+                    "negate": false,
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "type": "term",
+                      "path": "genres",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "type": "all",
+                "sort": [
+                  {
+                    "direction": "desc",
+                    "by": "vote_average"
+                  },
+                  {
+                    "direction": "desc",
+                    "by": "vote_count"
+                  }
+                ],
+                "limit": 10
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:36:59.737877
+        updated_at: 2026-02-23 14:37:01.421162
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "function-call-17049983524487511744"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: json
+        score: 2
+        inserted_at: 2026-02-23 14:37:01.438718
+        updated_at: 2026-02-23 14:37:03.676722
+        output: |
+          {
+            "path": {
+              "message_id": "019c8aee-87e6-727f-b2ee-d1d8889700e9"
+            },
+            "next": null,
+            "body": {
+              "artifact": {
+                "index": 0,
+                "type": "grid",
+                "references": [
+                  "function-call-17049983524487511744"
+                ]
+              }
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3 Flash Preview
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-02-23 14:37:03.686622
+        updated_at: 2026-02-23 14:37:06.194471
+        output: |
+          Grab your popcorn! I've rounded up some of the highest-rated and most popular animated features for you to check out. It looks like we're in a golden age of animation lately!\n\nTopping the list is the breathtaking **The Wild Robot**, which has been winning hearts everywhere with an impressive **Average Rating of 8.318** from over **5,561** fans. It's a beautiful story about a robot named Roz learning to survive and connect with nature.\n\nWe also have the emotional rollercoaster **Inside Out 2**, which brought back all our favorite feelings (and some new ones!) and earned an **Average Rating of 7.548**. And for the martial arts fans, Po returned in **Kung Fu Panda 4**, which currently holds an **Average Rating of 7.025**.\n\nCheck out the full list I've pulled up for you to see all the details. Do any of these catch your eye, or are you looking for something a bit more \"old school\"?

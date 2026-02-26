@@ -1,0 +1,20 @@
+---
+import SuiteResultsPage from "../../../../components/llm-tests/SuiteResultsPage.astro";
+import resultsYaml from "../../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/gemini-3/results.yml?raw";
+
+const site = Astro.site ?? new URL("https://upmaru.com");
+const pageImage = new URL(
+  "/llm-tests/simple-tama-agentic-workflow-q1-2026/gemini-3.png",
+  site,
+).toString();
+---
+
+<SuiteResultsPage
+  pageTitle="Gemini 3 | Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
+  pageDescription="Gemini 3 results for the Simple Tama Agentic Workflow Q1 2026 test run."
+  pageImage={pageImage}
+  backHref="/llm-tests/simple-tama-agentic-workflow-q1-2026/"
+  fallbackSuiteName="Gemini 3"
+  resultsYaml={resultsYaml}
+  summaryText="Output and timing analysis for the Gemini 3 suite in the agentic workflow."
+/>
