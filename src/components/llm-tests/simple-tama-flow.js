@@ -896,7 +896,7 @@ export default function SimpleTamaFlow() {
     },
     e(
       "div",
-      { className: "relative h-[52rem] w-full" },
+      { className: "relative h-[32rem] w-full sm:h-[42rem] lg:h-[52rem]" },
       e(
         ReactFlow,
         {
@@ -910,6 +910,7 @@ export default function SimpleTamaFlow() {
           nodesConnectable: false,
           elementsSelectable: false,
           panOnDrag: true,
+          preventScrolling: false,
           zoomOnScroll: false,
           zoomOnPinch: false,
           zoomOnDoubleClick: false,
