@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import NewsletterSignup from "../components/llm-tests/NewsletterSignup.astro";
 const defaultTitle = "Upmaru";
 const defaultDescription =
   "Upmaru is the AI-native stack for builders and creators, combining infrastructure, intelligence, and application layers.";
@@ -129,6 +130,7 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
         )
       }
       <slot />
+      {isLlmTestsPath && <NewsletterSignup />}
     </main>
 
     <footer

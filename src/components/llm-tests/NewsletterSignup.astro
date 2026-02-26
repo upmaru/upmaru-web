@@ -1,0 +1,221 @@
+---
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAACicBbaHrPHs0g29";
+const hasTurnstile = Boolean(turnstileSiteKey);
+---
+
+<section
+  class="relative isolate overflow-hidden bg-linear-to-b from-primary/10 to-transparent py-16 sm:py-24"
+>
+  <div
+    aria-hidden="true"
+    class="absolute -inset-y-24 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-45deg] bg-base-100 shadow-xl ring-1 shadow-primary/10 ring-base-300 sm:-mr-80 lg:-mr-96"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-linear-to-t from-base-200 to-transparent sm:h-32"
+  >
+  </div>
+  <div class="mx-auto max-w-7xl px-6 sm:px-8">
+    <div
+      class="rounded-box border border-base-300/70 bg-base-100/55 px-6 py-16 shadow-xl backdrop-blur-md sm:px-10 xl:flex xl:items-center xl:gap-10 xl:px-16 xl:py-20"
+    >
+      <h2
+        class="max-w-2xl text-3xl font-semibold tracking-tight text-base-content sm:text-4xl xl:flex-auto"
+      >
+        Stay notified when new LLM test results are published.
+      </h2>
+
+      <form
+        data-newsletter-form
+        action="/api/newsletter/subscribe"
+        method="post"
+        class="mt-8 w-full max-w-xl space-y-4 xl:mt-0"
+      >
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="Enter your email"
+            class="input input-bordered w-full bg-base-100/80 text-base-content sm:flex-1"
+          />
+          <button
+            type="submit"
+            class="btn btn-primary sm:btn-wide"
+            disabled={!hasTurnstile}
+            data-newsletter-submit
+          >
+            Notify me
+          </button>
+        </div>
+
+        {
+          hasTurnstile ? (
+            <>
+              <input
+                type="hidden"
+                name="cf-turnstile-response"
+                value=""
+                data-turnstile-token
+              />
+              <div
+                id="turnstile-container"
+                data-turnstile-container
+                data-sitekey={turnstileSiteKey}
+              />
+            </>
+          ) : (
+            <div
+              role="alert"
+              class="alert alert-warning alert-soft items-start"
+            >
+              <span>
+                Newsletter captcha is not configured yet. Set{" "}
+                <code>PUBLIC_TURNSTILE_SITE_KEY</code> to enable submissions.
+              </span>
+            </div>
+          )
+        }
+
+        <p class="text-sm text-base-content/75">
+          We care about your data. Read our{" "}
+          <a href="/privacy/" class="link link-hover font-semibold">
+            privacy policy
+          </a>
+          .
+        </p>
+        <p
+          class="text-sm text-base-content/75"
+          role="status"
+          aria-live="polite"
+          data-newsletter-message
+        >
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+{
+  hasTurnstile && (
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      defer
+    />
+  )
+}
+
+<script is:inline>
+  const forms = document.querySelectorAll("[data-newsletter-form]");
+
+  forms.forEach((form) => {
+    if (!(form instanceof HTMLFormElement)) return;
+    if (form.dataset.jsBound === "true") return;
+    form.dataset.jsBound = "true";
+
+    const submitButton = form.querySelector("[data-newsletter-submit]");
+    const messageEl = form.querySelector("[data-newsletter-message]");
+    const tokenInput = form.querySelector("[data-turnstile-token]");
+    const turnstileContainer = form.querySelector("[data-turnstile-container]");
+    let turnstileWidgetId = null;
+
+    const renderTurnstile = () => {
+      if (!turnstileContainer) return;
+      if (!window.turnstile || typeof window.turnstile.render !== "function")
+        return;
+      if (turnstileWidgetId !== null) return;
+
+      turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+        sitekey: turnstileContainer.dataset.sitekey || "",
+        callback: (token) => {
+          if (tokenInput instanceof HTMLInputElement) tokenInput.value = token;
+          if (messageEl && messageEl.classList.contains("text-error")) {
+            messageEl.textContent = "";
+            messageEl.className = "text-sm text-base-content/75";
+          }
+        },
+        "error-callback": () => {
+          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+        },
+        "expired-callback": () => {
+          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+        },
+      });
+    };
+
+    renderTurnstile();
+    const turnstileInitTimer = window.setInterval(() => {
+      if (turnstileWidgetId !== null) {
+        window.clearInterval(turnstileInitTimer);
+        return;
+      }
+      renderTurnstile();
+    }, 250);
+    window.setTimeout(() => window.clearInterval(turnstileInitTimer), 5000);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!(submitButton instanceof HTMLButtonElement)) return;
+      if (tokenInput instanceof HTMLInputElement && !tokenInput.value.trim()) {
+        if (messageEl) {
+          messageEl.textContent = "Please complete the captcha.";
+          messageEl.className = "text-sm text-error";
+        }
+        return;
+      }
+
+      const originalLabel = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+      if (messageEl) {
+        messageEl.textContent = "";
+        messageEl.className = "text-sm text-base-content/75";
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success) {
+          form.reset();
+          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+          if (messageEl) {
+            messageEl.textContent =
+              data.message || "Subscribed. You will hear from us soon.";
+            messageEl.className = "text-sm text-success";
+          }
+          if (
+            turnstileWidgetId !== null &&
+            window.turnstile &&
+            typeof window.turnstile.reset === "function"
+          ) {
+            window.turnstile.reset(turnstileWidgetId);
+          }
+        } else {
+          if (messageEl) {
+            messageEl.textContent =
+              data.message || "Could not subscribe. Please try again.";
+            messageEl.className = "text-sm text-error";
+          }
+        }
+      } catch {
+        if (messageEl) {
+          messageEl.textContent = "Network error. Please try again.";
+          messageEl.className = "text-sm text-error";
+        }
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalLabel;
+      }
+    });
+  });
+</script>
