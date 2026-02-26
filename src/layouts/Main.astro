@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import NewsletterSignup from "../components/llm-tests/NewsletterSignup.astro";
+import { ClientRouter } from "astro:transitions";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ContentWritingIcon,
@@ -26,6 +27,7 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
 
 <html lang="en" data-theme="night">
   <head>
+    <ClientRouter />
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
