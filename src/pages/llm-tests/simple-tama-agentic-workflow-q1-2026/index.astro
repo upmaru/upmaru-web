@@ -2,6 +2,12 @@
 import Main from "../../../layouts/Main.astro";
 import { marked } from "marked";
 import { FAILSAFE_SCHEMA, load } from "js-yaml";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  AngelIcon,
+  ConfusedIcon,
+  DispleasedIcon,
+} from "@hugeicons/core-free-icons";
 import setupMarkdown from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/setup.md?raw";
 import { simpleTamaQ12026Suites as suites } from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
 import SimpleTamaFlow from "../../../components/llm-tests/simple-tama-flow.js";
@@ -428,12 +434,47 @@ const summaryRows = suites.map((suite) => {
           Key findings and results summary in a single rankings table.
         </p>
         <div role="alert" class="alert alert-info alert-soft mt-3">
-          <span>
-            <strong>Overall Score</strong> is a weighted blend of quality and speed:
-            <code>70% Output Score + 30% Latency Score</code>. This puts more
-            emphasis on output correctness while still rewarding faster
-            responses.
-          </span>
+          <div class="space-y-2">
+            <p>
+              <strong>Overall Score</strong> is a weighted blend of quality and speed:
+              <code>70% Output Score + 30% Latency Score</code>. This puts more
+              emphasis on output correctness while still rewarding faster
+              responses.
+            </p>
+            <div class="space-y-1">
+              <p><strong>Latency Feel Guide</strong></p>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-1 text-success"
+                >
+                  <HugeiconsIcon icon={AngelIcon} size={18} strokeWidth={1.8} />
+                  <span><code>&gt; 8</code> Fast</span>
+                </span>
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-1 text-warning"
+                >
+                  <HugeiconsIcon
+                    icon={ConfusedIcon}
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  <span
+                    ><code>&gt; 6 and &lt;= 8</code> Acceptable (Slightly slow)</span
+                  >
+                </span>
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-error/15 px-2 py-1 text-error"
+                >
+                  <HugeiconsIcon
+                    icon={DispleasedIcon}
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  <span><code>&lt;= 6</code> Almost unusable</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           class="mt-4 overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
@@ -545,7 +586,25 @@ const summaryRows = suites.map((suite) => {
                       </td>
                       <td class="font-mono">{row.outputScoreText}</td>
                       <td>{row.inferenceProviderText}</td>
-                      <td class="font-mono">{row.latencyScoreText}</td>
+                      <td
+                        class:list={[
+                          "font-mono",
+                          typeof row.latencyScore !== "number" &&
+                            "text-base-content/40",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore > 8 &&
+                            "text-success",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore > 6 &&
+                            row.latencyScore <= 8 &&
+                            "text-warning",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore <= 6 &&
+                            "text-error",
+                        ]}
+                      >
+                        {row.latencyScoreText}
+                      </td>
                       <td class="text-sm text-base-content/75">
                         {row.turnsText}
                       </td>
