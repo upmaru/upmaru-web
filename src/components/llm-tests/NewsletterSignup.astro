@@ -104,126 +104,137 @@ const subscribeEndpoint = "/api/newsletter/subscribe";
 }
 
 <script is:inline>
-  const forms = document.querySelectorAll("[data-newsletter-form]");
+  const initializeNewsletterSignup = () => {
+    const forms = document.querySelectorAll("[data-newsletter-form]");
 
-  forms.forEach((form) => {
-    if (!(form instanceof HTMLFormElement)) return;
-    if (form.dataset.jsBound === "true") return;
-    form.dataset.jsBound = "true";
+    forms.forEach((form) => {
+      if (!(form instanceof HTMLFormElement)) return;
+      if (form.dataset.jsBound === "true") return;
+      form.dataset.jsBound = "true";
 
-    const submitButton = form.querySelector("[data-newsletter-submit]");
-    const messageEl = form.querySelector("[data-newsletter-message]");
-    const turnstileContainer = form.querySelector("[data-turnstile-container]");
-    const tokenInput = form.querySelector("[data-turnstile-token]");
-    let turnstileWidgetId = null;
+      const submitButton = form.querySelector("[data-newsletter-submit]");
+      const messageEl = form.querySelector("[data-newsletter-message]");
+      const turnstileContainer = form.querySelector(
+        "[data-turnstile-container]",
+      );
+      const tokenInput = form.querySelector("[data-turnstile-token]");
+      let turnstileWidgetId = null;
 
-    const renderTurnstile = () => {
-      if (!turnstileContainer) return;
-      if (!window.turnstile || typeof window.turnstile.render !== "function")
-        return;
-      if (turnstileWidgetId !== null) return;
+      const renderTurnstile = () => {
+        if (!turnstileContainer) return;
+        if (!window.turnstile || typeof window.turnstile.render !== "function")
+          return;
+        if (turnstileWidgetId !== null) return;
 
-      turnstileWidgetId = window.turnstile.render(turnstileContainer, {
-        sitekey: turnstileContainer.dataset.sitekey || "",
-        callback: (token) => {
-          if (tokenInput instanceof HTMLInputElement) tokenInput.value = token;
-          if (messageEl && messageEl.classList.contains("text-error")) {
-            messageEl.textContent = "";
-            messageEl.className = "text-sm text-base-content/75";
-          }
-        },
-        "error-callback": () => {
-          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
-        },
-        "expired-callback": () => {
-          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
-        },
-      });
-    };
-
-    renderTurnstile();
-    const turnstileInitTimer = window.setInterval(() => {
-      if (turnstileWidgetId !== null) {
-        window.clearInterval(turnstileInitTimer);
-        return;
-      }
-      renderTurnstile();
-    }, 250);
-    window.setTimeout(() => window.clearInterval(turnstileInitTimer), 5000);
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!(submitButton instanceof HTMLButtonElement)) return;
-      if (tokenInput instanceof HTMLInputElement && !tokenInput.value.trim()) {
-        if (messageEl) {
-          messageEl.textContent = "Please complete the captcha.";
-          messageEl.className = "text-sm text-error";
-        }
-        return;
-      }
-
-      const originalLabel = submitButton.textContent;
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      if (messageEl) {
-        messageEl.textContent = "";
-        messageEl.className = "text-sm text-base-content/75";
-      }
-
-      try {
-        const formData = new FormData(form);
-        const payload = new URLSearchParams();
-        for (const [key, value] of formData.entries()) {
-          if (typeof value === "string") payload.append(key, value);
-        }
-
-        const response = await fetch(form.action, {
-          method: "POST",
-          body: payload.toString(),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
+        turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+          sitekey: turnstileContainer.dataset.sitekey || "",
+          callback: (token) => {
+            if (tokenInput instanceof HTMLInputElement)
+              tokenInput.value = token;
+            if (messageEl && messageEl.classList.contains("text-error")) {
+              messageEl.textContent = "";
+              messageEl.className = "text-sm text-base-content/75";
+            }
+          },
+          "error-callback": () => {
+            if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+          },
+          "expired-callback": () => {
+            if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
           },
         });
-        const data = await response.json().catch(() => ({}));
+      };
 
-        if (response.ok && data.success) {
-          form.reset();
-          if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+      renderTurnstile();
+      const turnstileInitTimer = window.setInterval(() => {
+        if (turnstileWidgetId !== null) {
+          window.clearInterval(turnstileInitTimer);
+          return;
+        }
+        renderTurnstile();
+      }, 250);
+      window.setTimeout(() => window.clearInterval(turnstileInitTimer), 5000);
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!(submitButton instanceof HTMLButtonElement)) return;
+        if (
+          tokenInput instanceof HTMLInputElement &&
+          !tokenInput.value.trim()
+        ) {
           if (messageEl) {
-            messageEl.textContent =
-              data.message || "Subscribed. You will hear from us soon.";
-            messageEl.className = "text-sm text-success";
-          }
-          if (
-            turnstileWidgetId !== null &&
-            window.turnstile &&
-            typeof window.turnstile.reset === "function"
-          ) {
-            window.turnstile.reset(turnstileWidgetId);
-          }
-        } else {
-          if (messageEl) {
-            const rateLimitMessage =
-              response.status === 429
-                ? "Too many signups. Please try again in a little while."
-                : "";
-            messageEl.textContent =
-              rateLimitMessage ||
-              data.message ||
-              `Could not subscribe (HTTP ${response.status}). Please try again.`;
+            messageEl.textContent = "Please complete the captcha.";
             messageEl.className = "text-sm text-error";
           }
+          return;
         }
-      } catch {
+
+        const originalLabel = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
         if (messageEl) {
-          messageEl.textContent = "Network error. Please try again.";
-          messageEl.className = "text-sm text-error";
+          messageEl.textContent = "";
+          messageEl.className = "text-sm text-base-content/75";
         }
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = originalLabel;
-      }
+
+        try {
+          const formData = new FormData(form);
+          const payload = new URLSearchParams();
+          for (const [key, value] of formData.entries()) {
+            if (typeof value === "string") payload.append(key, value);
+          }
+
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: payload.toString(),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          });
+          const data = await response.json().catch(() => ({}));
+
+          if (response.ok && data.success) {
+            form.reset();
+            if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
+            if (messageEl) {
+              messageEl.textContent =
+                data.message || "Subscribed. You will hear from us soon.";
+              messageEl.className = "text-sm text-success";
+            }
+            if (
+              turnstileWidgetId !== null &&
+              window.turnstile &&
+              typeof window.turnstile.reset === "function"
+            ) {
+              window.turnstile.reset(turnstileWidgetId);
+            }
+          } else {
+            if (messageEl) {
+              const rateLimitMessage =
+                response.status === 429
+                  ? "Too many signups. Please try again in a little while."
+                  : "";
+              messageEl.textContent =
+                rateLimitMessage ||
+                data.message ||
+                `Could not subscribe (HTTP ${response.status}). Please try again.`;
+              messageEl.className = "text-sm text-error";
+            }
+          }
+        } catch {
+          if (messageEl) {
+            messageEl.textContent = "Network error. Please try again.";
+            messageEl.className = "text-sm text-error";
+          }
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = originalLabel;
+        }
+      });
     });
-  });
+  };
+
+  document.addEventListener("astro:page-load", initializeNewsletterSignup);
+  initializeNewsletterSignup();
 </script>
