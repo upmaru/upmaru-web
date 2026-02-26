@@ -6,6 +6,8 @@ import {
 } from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
 import { generateOgImageForLlmTest } from "../../../utils/generateOgImages";
 
+export const prerender = true;
+
 export function getStaticPaths() {
   return simpleTamaQ12026Suites.map((suite) => ({
     params: { suite: suite.slug },

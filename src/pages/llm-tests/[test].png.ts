@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { generateOgImageForLlmTestRun } from "../../utils/generateOgImages";
 
+export const prerender = true;
+
 type LlmTestRunMeta = {
   slug: string;
   title: string;

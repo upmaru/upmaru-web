@@ -6,7 +6,10 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "npm run build && wrangler dev",
+    "preview:astro": "astro preview",
+    "deploy": "wrangler deploy --experimental-autoconfig=false --config wrangler.jsonc",
+    "cf-typegen": "wrangler types",
     "astro": "astro"
   },
   "dependencies": {
@@ -30,6 +33,8 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9"
+    "@astrojs/cloudflare": "^12.6.12",
+    "@types/js-yaml": "^4.0.9",
+    "wrangler": "^4.68.1"
   }
 }
