@@ -3,6 +3,7 @@ import Main from "../../layouts/Main.astro";
 import MermaidChart from "../MermaidChart";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
+  InformationCircleIcon,
   StarHalfIcon,
   StarIcon,
   StarOffIcon,
@@ -434,17 +435,11 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
     {
       parsedResults.note && (
         <div role="alert" class="alert alert-info alert-soft mt-4 items-start">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            class="h-5 w-5 shrink-0 stroke-current"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9" stroke-width="2" />
-            <path d="M12 10v6" stroke-width="2" stroke-linecap="round" />
-            <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none" />
-          </svg>
+          <HugeiconsIcon
+            icon={InformationCircleIcon}
+            size={20}
+            strokeWidth={1.8}
+          />
           <div class="w-full">
             <p class="font-semibold leading-none">Note</p>
             <div class="mt-1 whitespace-pre-line">{parsedResults.note}</div>

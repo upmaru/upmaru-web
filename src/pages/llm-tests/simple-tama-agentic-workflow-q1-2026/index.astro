@@ -397,27 +397,37 @@ const summaryRows = suites.map((suite) => {
             <thead>
               <tr>
                 <th></th>
-                <th></th>
+                <th class="text-center"></th>
                 <th>Model Test</th>
                 <th>
-                  <button
-                    type="button"
-                    class="btn btn-ghost btn-xs px-1 normal-case"
-                    data-sort-key="outputScoreSort"
-                    data-label="Output Score"
-                  >
-                    Output Score
-                  </button>
+                  <div class="inline-flex items-center gap-1">
+                    <span>Output Score</span>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-xs px-1 normal-case"
+                      data-sort-key="outputScoreSort"
+                      data-label="Output Score"
+                      aria-label="Sort by Output Score"
+                      title="Sort by Output Score"
+                    >
+                      <span aria-hidden="true" data-sort-icon>↕</span>
+                    </button>
+                  </div>
                 </th>
                 <th>
-                  <button
-                    type="button"
-                    class="btn btn-ghost btn-xs px-1 normal-case"
-                    data-sort-key="latencyScoreSort"
-                    data-label="Latency Score"
-                  >
-                    Latency Score
-                  </button>
+                  <div class="inline-flex items-center gap-1">
+                    <span>Latency Score</span>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-xs px-1 normal-case"
+                      data-sort-key="latencyScoreSort"
+                      data-label="Latency Score"
+                      aria-label="Sort by Latency Score"
+                      title="Sort by Latency Score"
+                    >
+                      <span aria-hidden="true" data-sort-icon>↕</span>
+                    </button>
+                  </div>
                 </th>
                 <th>Turns Scored</th>
               </tr>
@@ -431,12 +441,12 @@ const summaryRows = suites.map((suite) => {
                       data-latency-score-sort={row.latencyScoreSort}
                     >
                       <th>{index + 1}</th>
-                      <td>
+                      <td class="text-center">
                         {row.iconSrc && (
                           <img
                             src={row.iconSrc}
                             alt={row.iconAlt}
-                            class="h-5 w-auto"
+                            class="mx-auto h-5 w-auto"
                             loading="lazy"
                           />
                         )}
@@ -498,9 +508,20 @@ const summaryRows = suites.map((suite) => {
 
       buttons.forEach((button) => {
         const isActive = button.dataset.sortKey === activeKey;
-        const arrow = isActive ? (direction === "desc" ? " ↓" : " ↑") : "";
-        const label = button.dataset.label || "";
-        button.textContent = `${label}${arrow}`;
+        const label = button.dataset.label || "score";
+        const icon = button.querySelector<HTMLElement>("[data-sort-icon]");
+        if (icon)
+          icon.textContent = isActive
+            ? direction === "desc"
+              ? "↓"
+              : "↑"
+            : "↕";
+        button.setAttribute(
+          "aria-label",
+          isActive
+            ? `Sorting ${label} ${direction === "desc" ? "descending" : "ascending"}`
+            : `Sort by ${label}`,
+        );
       });
     };
 
