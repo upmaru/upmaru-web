@@ -31,14 +31,22 @@ export function scoreLatencyMicros(latencyMicros: number): LatencyScore {
 
 export function summarizeLatencyScore<T extends DurationLatencyTask>(
   tasks: T[],
+  options?: {
+    expectedStepCount?: number;
+  },
 ) {
   if (!tasks.length) return null;
+
+  const expectedStepCount = Math.max(
+    options?.expectedStepCount ?? tasks.length,
+    tasks.length,
+  );
 
   const rawTotal = tasks.reduce(
     (sum, task) => sum + scoreLatencyMicros(task.durationMicros),
     0,
   );
-  const rawMax = tasks.length * LATENCY_STEP_SCORE_RULES.maxPerStep;
+  const rawMax = expectedStepCount * LATENCY_STEP_SCORE_RULES.maxPerStep;
   const normalizedScore = Math.max(
     LATENCY_NORMALIZED_SCORE_SCALE.min,
     Math.min(
@@ -51,7 +59,7 @@ export function summarizeLatencyScore<T extends DurationLatencyTask>(
   return {
     rawTotal,
     rawMax,
-    stepCount: tasks.length,
+    stepCount: expectedStepCount,
     normalizedScore,
   };
 }

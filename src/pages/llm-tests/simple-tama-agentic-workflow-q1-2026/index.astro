@@ -2,6 +2,12 @@
 import Main from "../../../layouts/Main.astro";
 import { marked } from "marked";
 import { FAILSAFE_SCHEMA, load } from "js-yaml";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  AngelIcon,
+  ConfusedIcon,
+  DispleasedIcon,
+} from "@hugeicons/core-free-icons";
 import setupMarkdown from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/setup.md?raw";
 import { simpleTamaQ12026Suites as suites } from "../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/suites";
 import SimpleTamaFlow from "../../../components/llm-tests/simple-tama-flow.js";
@@ -177,7 +183,9 @@ function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
       })
       .filter((task): task is { durationMicros: number } => Boolean(task));
 
-    const latencySummary = summarizeLatencyScore(waitingDurations);
+    const latencySummary = summarizeLatencyScore(waitingDurations, {
+      expectedStepCount: 4,
+    });
     if (latencySummary) latencyScores.push(latencySummary.normalizedScore);
   }
 
@@ -195,6 +203,30 @@ function buildSuiteScoreSummary(rawYaml: string): SuiteScoreSummary {
 function formatOutOfTen(value: number | null) {
   if (value === null) return "-";
   return value.toFixed(1);
+}
+
+function calculateOverallScore(
+  outputScore: number | null,
+  latencyScore: number | null,
+) {
+  const outputWeight = 0.7;
+  const latencyWeight = 0.3;
+
+  let weightedTotal = 0;
+  let weightTotal = 0;
+
+  if (typeof outputScore === "number") {
+    weightedTotal += outputScore * outputWeight;
+    weightTotal += outputWeight;
+  }
+
+  if (typeof latencyScore === "number") {
+    weightedTotal += latencyScore * latencyWeight;
+    weightTotal += latencyWeight;
+  }
+
+  if (weightTotal === 0) return null;
+  return Number((weightedTotal / weightTotal).toFixed(1));
 }
 
 const llmTasks = [
@@ -250,6 +282,7 @@ const summaryRows = suites.map((suite) => {
   const score = suiteScoreBySlug[suite.slug];
   const outputScore = score?.outputScoreAvg ?? null;
   const latencyScore = score?.latencyScoreAvg ?? null;
+  const overallScore = calculateOverallScore(outputScore, latencyScore);
 
   return {
     title: score?.suite || suite.title,
@@ -259,8 +292,11 @@ const summaryRows = suites.map((suite) => {
     inferenceProviderText: score?.inferenceProvider || "-",
     outputScore,
     latencyScore,
+    overallScore,
+    overallScoreText: formatOutOfTen(overallScore),
     outputScoreText: formatOutOfTen(outputScore),
     latencyScoreText: formatOutOfTen(latencyScore),
+    overallScoreSort: overallScore ?? -1,
     outputScoreSort: outputScore ?? -1,
     latencyScoreSort: latencyScore ?? -1,
     turnsText: score
@@ -362,7 +398,10 @@ const summaryRows = suites.map((suite) => {
                       <img
                         src={suite.iconSrc}
                         alt={suite.iconAlt || `${suite.title} icon`}
-                        class="mb-3 h-8 w-auto"
+                        class:list={[
+                          "mb-3 h-8 w-auto",
+                          suite.iconSrc === "/grok.svg" && "invert",
+                        ]}
                         loading="lazy"
                       />
                     )}
@@ -394,6 +433,49 @@ const summaryRows = suites.map((suite) => {
         <p class="mt-2 text-base-content/75">
           Key findings and results summary in a single rankings table.
         </p>
+        <div role="alert" class="alert alert-info alert-soft mt-3">
+          <div class="space-y-2">
+            <p>
+              <strong>Overall Score</strong> is a weighted blend of quality and speed:
+              <code>70% Output Score + 30% Latency Score</code>. This puts more
+              emphasis on output correctness while still rewarding faster
+              responses.
+            </p>
+            <div class="space-y-1">
+              <p><strong>Latency Feel Guide</strong></p>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-1 text-success"
+                >
+                  <HugeiconsIcon icon={AngelIcon} size={18} strokeWidth={1.8} />
+                  <span><code>&gt; 8</code> Fast</span>
+                </span>
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-1 text-warning"
+                >
+                  <HugeiconsIcon
+                    icon={ConfusedIcon}
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  <span
+                    ><code>&gt; 6 and &lt;= 8</code> Acceptable (Slightly slow)</span
+                  >
+                </span>
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-error/15 px-2 py-1 text-error"
+                >
+                  <HugeiconsIcon
+                    icon={DispleasedIcon}
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  <span><code>&lt;= 6</code> Almost unusable</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           class="mt-4 overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
         >
@@ -403,6 +485,21 @@ const summaryRows = suites.map((suite) => {
                 <th></th>
                 <th class="text-center"></th>
                 <th>Model Test</th>
+                <th>
+                  <div class="inline-flex items-center gap-1">
+                    <span>Overall Score</span>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-xs px-1 normal-case"
+                      data-sort-key="overallScoreSort"
+                      data-label="Overall Score"
+                      aria-label="Sort by Overall Score"
+                      title="Sort by Overall Score"
+                    >
+                      <span aria-hidden="true" data-sort-icon>↕</span>
+                    </button>
+                  </div>
+                </th>
                 <th>
                   <div class="inline-flex items-center gap-1">
                     <span>Output Score</span>
@@ -442,6 +539,7 @@ const summaryRows = suites.map((suite) => {
                 summaryRows.map((row, index) => {
                   return (
                     <tr
+                      data-overall-score-sort={row.overallScoreSort}
                       data-output-score-sort={row.outputScoreSort}
                       data-latency-score-sort={row.latencyScoreSort}
                     >
@@ -451,7 +549,10 @@ const summaryRows = suites.map((suite) => {
                           <img
                             src={row.iconSrc}
                             alt={row.iconAlt}
-                            class="mx-auto h-5 w-auto"
+                            class:list={[
+                              "mx-auto h-5 w-auto",
+                              row.iconSrc === "/grok.svg" && "invert",
+                            ]}
                             loading="lazy"
                           />
                         )}
@@ -464,9 +565,46 @@ const summaryRows = suites.map((suite) => {
                           {row.title}
                         </a>
                       </td>
+                      <td
+                        class:list={[
+                          "font-mono",
+                          typeof row.overallScore !== "number" &&
+                            "text-base-content/40",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore > 8 &&
+                            "text-success",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore > 6 &&
+                            row.overallScore <= 8 &&
+                            "text-warning",
+                          typeof row.overallScore === "number" &&
+                            row.overallScore <= 6 &&
+                            "text-error",
+                        ]}
+                      >
+                        {row.overallScoreText}
+                      </td>
                       <td class="font-mono">{row.outputScoreText}</td>
                       <td>{row.inferenceProviderText}</td>
-                      <td class="font-mono">{row.latencyScoreText}</td>
+                      <td
+                        class:list={[
+                          "font-mono",
+                          typeof row.latencyScore !== "number" &&
+                            "text-base-content/40",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore > 8 &&
+                            "text-success",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore > 6 &&
+                            row.latencyScore <= 8 &&
+                            "text-warning",
+                          typeof row.latencyScore === "number" &&
+                            row.latencyScore <= 6 &&
+                            "text-error",
+                        ]}
+                      >
+                        {row.latencyScoreText}
+                      </td>
                       <td class="text-sm text-base-content/75">
                         {row.turnsText}
                       </td>
@@ -538,6 +676,6 @@ const summaryRows = suites.map((suite) => {
       });
     });
 
-    sortRows("latencyScoreSort");
+    sortRows("overallScoreSort");
   }
 </script>

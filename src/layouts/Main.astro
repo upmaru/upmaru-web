@@ -1,6 +1,12 @@
 ---
 import "../styles/global.css";
 import NewsletterSignup from "../components/llm-tests/NewsletterSignup.astro";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ContentWritingIcon,
+  Home08Icon,
+  Robot01Icon,
+} from "@hugeicons/core-free-icons";
 const defaultTitle = "Upmaru";
 const defaultDescription =
   "Upmaru is the AI-native stack for builders and creators, combining infrastructure, intelligence, and application layers.";
@@ -64,21 +70,7 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
                   !isBlogPath && !isLlmTestsPath && "tab-active",
                 ]}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  class="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3 11.5 12 4l9 7.5M6.5 10v9h11v-9M10 19v-5h4v5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <HugeiconsIcon icon={Home08Icon} size={16} strokeWidth={1.8} />
                 Home
               </a>
               <a
@@ -86,21 +78,11 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
                 href="/blog/"
                 class:list={["tab gap-2", isBlogPath && "tab-active"]}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  class="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5ZM8.5 8h7M8.5 11.5h7M8.5 15h4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <HugeiconsIcon
+                  icon={ContentWritingIcon}
+                  size={16}
+                  strokeWidth={1.8}
+                />
                 Blog
               </a>
               <a
@@ -108,21 +90,7 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
                 href="/llm-tests/"
                 class:list={["tab gap-2", isLlmTestsPath && "tab-active"]}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  class="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M9 3.5v3M15 3.5v3M8 18h8M4.5 9h15M6.5 6.5h11A1.5 1.5 0 0 1 19 8v8.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 16.5V8a1.5 1.5 0 0 1 1.5-1.5Z"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <HugeiconsIcon icon={Robot01Icon} size={16} strokeWidth={1.8} />
                 LLM Tests
               </a>
             </div>

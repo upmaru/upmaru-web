@@ -25,9 +25,13 @@ export function getStaticPaths() {
 
 export const GET: APIRoute = async ({ props }) => {
   const { run } = props as { run: LlmTestRunMeta };
-  const iconPaths = run.suites
-    .map((suite) => suite.iconSrc)
-    .filter((iconPath) => Boolean(iconPath));
+  const iconPaths = Array.from(
+    new Set(
+      run.suites
+        .map((suite) => suite.iconSrc)
+        .filter((iconPath): iconPath is string => Boolean(iconPath)),
+    ),
+  );
 
   return new Response(
     await generateOgImageForLlmTestRun({

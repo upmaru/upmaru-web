@@ -68,7 +68,7 @@ type TaskTiming = ParsedTask & {
   durationMs: string;
 };
 
-type StepOutput = TaskTiming & {
+type StepOutput = ParsedTask & {
   outputHtml: string | null;
   outputQuoteHtml: string | null;
   remarkHtml: string | null;
@@ -227,13 +227,22 @@ function normalizeEscapedNewlines(value: string) {
   return value.replace(/\\n/g, "\n");
 }
 
-async function renderTaskOutput(task: TaskTiming): Promise<StepOutput> {
+async function renderTaskOutput(task: ParsedTask): Promise<StepOutput> {
   const raw = task.outputRaw.trim();
   const outputFormat = task.outputFormat || "";
   const remarkMarkdown = normalizeEscapedNewlines(task.remarkRaw.trim());
   const remarkHtml = remarkMarkdown.length
     ? await marked.parse(remarkMarkdown)
     : null;
+
+  if (!raw.length) {
+    return {
+      ...task,
+      outputHtml: null,
+      outputQuoteHtml: null,
+      remarkHtml,
+    };
+  }
 
   if (outputFormat === "markdown_quote") {
     const markdown = normalizeEscapedNewlines(raw);
@@ -310,7 +319,9 @@ async function buildTurnView(turnData: ParsedTurn) {
     beforeResponseLatencyMicros !== null
       ? formatDurationMs(beforeResponseLatencyMicros)
       : null;
-  const latencyScoreSummary = summarizeLatencyScore(userWaitingTasks);
+  const latencyScoreSummaryFixed = summarizeLatencyScore(userWaitingTasks, {
+    expectedStepCount: 4,
+  });
   const outputScoreSummary = sumStepScores(taskTimings, {
     fromStep: 1,
     toStep: 5,
@@ -363,7 +374,14 @@ async function buildTurnView(turnData: ParsedTurn) {
       ].join("\n")
     : null;
 
-  const stepOutputs = await Promise.all(taskTimings.map(renderTaskOutput));
+  const stepOutputs = await Promise.all(
+    tasks
+      .filter(
+        (task) =>
+          task.outputRaw.trim().length > 0 || task.remarkRaw.trim().length > 0,
+      )
+      .map(renderTaskOutput),
+  );
 
   return {
     turn: turnData.turn,
@@ -372,7 +390,7 @@ async function buildTurnView(turnData: ParsedTurn) {
     userWaitingTasks,
     postResponseTasks,
     beforeResponseLatencyMs,
-    latencyScoreSummary,
+    latencyScoreSummary: latencyScoreSummaryFixed,
     outputScoreSummary,
     slowestUserWaitingTask,
     slowestUserWaitingSharePct,
@@ -617,65 +635,6 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
                     )}
                   </div>
 
-                  <div class="stats stats-vertical mt-4 w-full border border-base-300 bg-base-100 lg:stats-horizontal">
-                    <div class="stat">
-                      <div class="stat-title">Overall Output Score</div>
-                      <div class="stat-value text-primary">
-                        {turnView.outputScoreSummary.total} /{" "}
-                        {turnView.outputScoreSummary.max}
-                      </div>
-                      <div class="stat-desc">
-                        Sum of scores across steps 1-5
-                      </div>
-                    </div>
-
-                    <div class="stat">
-                      <div class="stat-title">Latency Score</div>
-                      {turnView.latencyScoreSummary ? (
-                        <>
-                          <div
-                            class:list={[
-                              "stat-value",
-                              turnView.latencyScoreSummary.normalizedScore >=
-                                8 && "text-success",
-                              turnView.latencyScoreSummary.normalizedScore >=
-                                5 &&
-                                turnView.latencyScoreSummary.normalizedScore <
-                                  8 &&
-                                "text-warning",
-                              turnView.latencyScoreSummary.normalizedScore <
-                                5 && "text-error",
-                            ]}
-                          >
-                            {turnView.latencyScoreSummary.normalizedScore} /{" "}
-                            {LATENCY_NORMALIZED_SCORE_SCALE.max}
-                          </div>
-                          <div class="stat-desc">
-                            latency {turnView.beforeResponseLatencyMs}ms
-                          </div>
-                          <div class="stat-desc mt-1">
-                            per step: &lt;
-                            {LATENCY_STEP_SCORE_RULES.fastMs / 1000}s = 2, &lt;
-                            {LATENCY_STEP_SCORE_RULES.moderateMs / 1000}s = 1,
-                            else = 0
-                          </div>
-                          <div class="stat-desc mt-1">
-                            raw {turnView.latencyScoreSummary.rawTotal} /{" "}
-                            {turnView.latencyScoreSummary.rawMax} across{" "}
-                            {turnView.latencyScoreSummary.stepCount} steps
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div class="stat-value text-base-content/40">-</div>
-                          <div class="stat-desc">
-                            Not enough timing data for user waiting window
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
                   <div class="mt-6">
                     <h3 class="text-xl font-semibold">Step Outputs</h3>
                     {turnView.stepOutputs.length > 0 ? (
@@ -751,12 +710,12 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
                                 class="step-output-quote prose prose-invert mt-3 max-w-none"
                                 set:html={task.outputQuoteHtml}
                               />
-                            ) : (
+                            ) : task.outputHtml ? (
                               <div
-                                class="step-output mt-3 overflow-x-auto"
+                                class="step-output mt-3"
                                 set:html={task.outputHtml}
                               />
-                            )}
+                            ) : null}
                             {task.remarkHtml && (
                               <div
                                 role="alert"
@@ -779,6 +738,69 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
                         No step outputs for this turn yet.
                       </p>
                     )}
+                  </div>
+
+                  <div class="mt-6">
+                    <h3 class="text-xl font-semibold">Turn Scores</h3>
+                    <div class="stats stats-vertical mt-4 w-full border border-base-300 bg-base-100 lg:stats-horizontal">
+                      <div class="stat">
+                        <div class="stat-title">Overall Output Score</div>
+                        <div class="stat-value text-primary">
+                          {turnView.outputScoreSummary.total} /{" "}
+                          {turnView.outputScoreSummary.max}
+                        </div>
+                        <div class="stat-desc">
+                          Sum of scores across steps 1-5
+                        </div>
+                      </div>
+
+                      <div class="stat">
+                        <div class="stat-title">Latency Score</div>
+                        {turnView.latencyScoreSummary ? (
+                          <>
+                            <div
+                              class:list={[
+                                "stat-value",
+                                turnView.latencyScoreSummary.normalizedScore >=
+                                  8 && "text-success",
+                                turnView.latencyScoreSummary.normalizedScore >=
+                                  5 &&
+                                  turnView.latencyScoreSummary.normalizedScore <
+                                    8 &&
+                                  "text-warning",
+                                turnView.latencyScoreSummary.normalizedScore <
+                                  5 && "text-error",
+                              ]}
+                            >
+                              {turnView.latencyScoreSummary.normalizedScore} /{" "}
+                              {LATENCY_NORMALIZED_SCORE_SCALE.max}
+                            </div>
+                            <div class="stat-desc">
+                              latency {turnView.beforeResponseLatencyMs}ms
+                            </div>
+                            <div class="stat-desc mt-1">
+                              per step: &lt;
+                              {LATENCY_STEP_SCORE_RULES.fastMs / 1000}s = 2,
+                              &lt;
+                              {LATENCY_STEP_SCORE_RULES.moderateMs / 1000}s = 1,
+                              else = 0
+                            </div>
+                            <div class="stat-desc mt-1">
+                              raw {turnView.latencyScoreSummary.rawTotal} /{" "}
+                              {turnView.latencyScoreSummary.rawMax} across{" "}
+                              {turnView.latencyScoreSummary.stepCount} steps
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div class="stat-value text-base-content/40">-</div>
+                            <div class="stat-desc">
+                              Not enough timing data for user waiting window
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -860,6 +882,14 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
     border-radius: 0.75rem;
     border: 1px solid var(--color-base-300);
     padding: 0.875rem 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  .step-output pre.shiki code {
+    display: block;
+    min-width: max-content;
   }
 
   .step-output-quote blockquote {
