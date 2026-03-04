@@ -1,0 +1,349 @@
+suite: Gemini 3.1
+youtube: https://www.youtube.com/watch?v=rYoGLDZ6p8c
+inference_provider: Google AI Studio
+note: |
+  Endpoint used: direct Google AI Studio OpenAI-compatible endpoint.
+  Also tested OpenRouter's endpoint, but function calls did not return valid output.
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:38:47.748531
+        updated_at: 2026-03-04 04:38:49.443904
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:38:49.464719
+        updated_at: 2026-03-04 04:38:52.029801
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 10,
+                "sort": [
+                  {
+                    "direction": "desc",
+                    "by": "vote_average"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "value": {
+                      "from": 500
+                    },
+                    "by": "vote_count",
+                    "type": "range"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:38:52.040665
+        updated_at: 2026-03-04 04:38:53.595343
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "function-call-17508376545942936162"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:38:53.616479
+        updated_at: 2026-03-04 04:38:55.258876
+        output: |
+          {
+            "path": {
+              "message_id": "019cb724-2e50-7ae6-b64b-f61a589c443a"
+            },
+            "next": null,
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "function-call-17508376545942936162"
+                ],
+                "type": "grid"
+              }
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-04 04:38:55.270115
+        updated_at: 2026-03-04 04:38:57.527758
+        output: |
+          You got it! I've dug through the database to find the top-rated movies for you. It’s a pretty exciting mix—some big blockbusters and some truly compelling stories in there!\n\nLeading the pack, *The Wild Robot* is currently sitting at a fantastic **Average Rating** of **8.318**, followed closely by the epic *Dune: Part Two* with an **Average Rating** of **8.131**. It’s always fun to see which films really resonated with audiences!\n\nI've put together a handy list of the top 10 for you to browse through—you can check out the details right here:\n\n*   **The Wild Robot** (Average Rating: 8.318)\n*   **Dune: Part Two** (Average Rating: 8.131)\n*   **Sonic the Hedgehog 3** (Average Rating: 7.64)\n*   **Deadpool & Wolverine** (Average Rating: 7.567)\n*   **Inside Out 2** (Average Rating: 7.548)\n*   **Furiosa: A Mad Max Saga** (Average Rating: 7.5)\n*   **Bad Boys: Ride or Die** (Average Rating: 7.346)\n*   **The Beekeeper** (Average Rating: 7.269)\n*   **Alien: Romulus** (Average Rating: 7.2)\n*   **Conclave** (Average Rating: 7.2)\n\nTake a look at the list and see if any of these catch your eye for a movie night! Do any of these jump out at you, or were you looking for a specific genre?
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:07.493035
+        updated_at: 2026-03-04 04:39:09.795717
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:09.815917
+        updated_at: 2026-03-04 04:39:12.605662
+        output: |
+          {
+            "next": null,
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "sort": [
+                  {
+                    "direction": "desc",
+                    "by": "vote_average"
+                  },
+                  {
+                    "direction": "desc",
+                    "by": "vote_count"
+                  }
+                ],
+                "limit": 25,
+                "intent": [
+                  "space, outer space, sci-fi, interstellar, spacecraft"
+                ],
+                "type": "vector",
+                "filter": [
+                  {
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    },
+                    "by": "vote_count"
+                  }
+                ]
+              }
+            }
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:12.626671
+        updated_at: 2026-03-04 04:39:14.060253
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "function-call-15299130363862741251"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:14.082409
+        updated_at: 2026-03-04 04:39:15.788912
+        output: |
+          {
+            "path": {
+              "message_id": "019cb724-7b48-7f19-a2b0-a414672bda4a"
+            },
+            "next": null,
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "function-call-15299130363862741251"
+                ]
+              }
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-04 04:39:15.800029
+        updated_at: 2026-03-04 04:39:17.862178
+        output: |
+          Great question! Who doesn't love a good trip to the cosmos? It's the ultimate frontier, right?\n\nI've pulled together a few titles for you that venture into the great unknown. Check out the list I've put together for you!\n\nThe first one you should definitely keep on your radar is **Alien: Romulus**, which takes you right into the heart of a derelict space station—talk about high stakes! It’s currently sitting at an Average Rating of 7.2 with over 4,000 votes, so it’s definitely catching people's attention.\n\nI also found **Venom: The Last Dance**, which also has some space-faring elements and comes with an Average Rating of 6.672.\n\nThere you have it! Those are some solid picks to get you started on your space adventure. Let me know if you want more suggestions or if you're looking for something specific like a particular sub-genre of sci-fi!
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:24.688387
+        updated_at: 2026-03-04 04:39:27.371466
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:27.396208
+        updated_at: 2026-03-04 04:39:29.320738
+        output: |
+          {
+            "body": {
+              "search": {
+                "type": "all",
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "value": "Animation",
+                      "path": "genres",
+                      "type": "term"
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "direction": "desc",
+                    "by": "vote_average"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "limit": 10
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:29.331446
+        updated_at: 2026-03-04 04:39:31.00319
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "function-call-11923487387050988249"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-04 04:39:31.026529
+        updated_at: 2026-03-04 04:39:32.599434
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "function-call-11923487387050988249"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cb724-be73-758d-85e4-4f11e37581dd"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Gemini 3.1 Flash Lite
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-04 04:39:32.609842
+        updated_at: 2026-03-04 04:39:33.954365
+        output: |
+          Oh, you're looking for some top-tier animation? You've come to the right place! I love a good cartoon—they're often the most creative and emotionally resonant stories out there.\n\nI've pulled together a few heavy hitters for you to check out. It looks like ***The Wild Robot*** is currently leading the pack with an impressive 8.318 average rating from over 5,500 votes! That's quite a feat. You'll also find some other fantastic choices in the list I've generated for you, including the emotional journey of *Inside Out 2* and the latest adventure in *Kung Fu Panda 4*.\n\nTake a peek at the recommendations I've put together—hopefully, one of these will be perfect for your next movie night!

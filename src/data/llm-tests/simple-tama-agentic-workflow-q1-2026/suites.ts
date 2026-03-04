@@ -39,6 +39,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconAlt: "Gemini 3 icon",
   },
   {
+    slug: "gemini-3-1",
+    title: "Gemini 3.1 Flash Lite",
+    description: "Test for Gemini 3.1 Flash Lite model in an agentic workflow",
+    iconSrc: "/gemini-color.svg",
+    iconAlt: "Gemini 3.1 Flash Lite icon",
+  },
+  {
     slug: "glm-5",
     title: "GLM 5",
     description: "Test for GLM 5 model in an agentic workflow",
