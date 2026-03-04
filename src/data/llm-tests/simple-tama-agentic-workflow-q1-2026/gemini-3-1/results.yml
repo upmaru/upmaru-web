@@ -1,5 +1,5 @@
 suite: Gemini 3.1
-youtube: https://www.youtube.com/watch?v=rYoGLDZ6p8c
+youtube: https://www.youtube.com/watch?v=_ETWcIhcrkk
 inference_provider: Google AI Studio
 note: |
   Endpoint used: direct Google AI Studio OpenAI-compatible endpoint.
