@@ -288,6 +288,10 @@ const summaryRows = suites.map((suite) => {
   const outputScore = score?.outputScoreAvg ?? null;
   const latencyScore = score?.latencyScoreAvg ?? null;
   const overallScore = calculateOverallScore(outputScore, latencyScore);
+  const overallProgressPercent =
+    typeof overallScore === "number"
+      ? Math.max(0, Math.min(100, Math.round(overallScore * 10)))
+      : 0;
 
   return {
     title: score?.suite || suite.title,
@@ -298,6 +302,7 @@ const summaryRows = suites.map((suite) => {
     outputScore,
     latencyScore,
     overallScore,
+    overallProgressPercent,
     overallScoreText: formatOutOfTen(overallScore),
     outputScoreText: formatOutOfTen(outputScore),
     latencyScoreText: formatOutOfTen(latencyScore),
@@ -720,6 +725,7 @@ const summaryRows = suites.map((suite) => {
                   </div>
                 </th>
                 <th>Turns Scored</th>
+                <th>Quality</th>
               </tr>
             </thead>
             <tbody id="suite-summary-body">
@@ -813,6 +819,35 @@ const summaryRows = suites.map((suite) => {
                       </td>
                       <td class="text-sm text-base-content/75">
                         {row.turnsText}
+                      </td>
+                      <td class="w-44">
+                        <div class="flex items-center gap-2">
+                          <div class="h-2.5 w-28 overflow-hidden rounded-full bg-base-content/10">
+                            <div
+                              class:list={[
+                                "h-full rounded-full",
+                                typeof row.overallScore !== "number" &&
+                                  "bg-base-content/20",
+                                typeof row.overallScore === "number" &&
+                                  row.overallScore > 8 &&
+                                  "bg-success",
+                                typeof row.overallScore === "number" &&
+                                  row.overallScore > 6 &&
+                                  row.overallScore <= 8 &&
+                                  "bg-warning",
+                                typeof row.overallScore === "number" &&
+                                  row.overallScore <= 6 &&
+                                  "bg-error",
+                              ]}
+                              style={`width: ${row.overallProgressPercent}%`}
+                            />
+                          </div>
+                          <span class="w-10 text-right font-mono text-xs text-base-content/70">
+                            {typeof row.overallScore === "number"
+                              ? `${row.overallProgressPercent}%`
+                              : "-"}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   );
