@@ -81,6 +81,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/openai.svg",
     iconAlt: "GPT OSS 120b icon",
   },
+  {
+    slug: "gpt-5-mini",
+    title: "GPT 5 Mini",
+    description: "Test for GPT 5 Mini model in an agentic workflow",
+    iconSrc: "/openai.svg",
+    iconAlt: "GPT 5 Mini icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {

@@ -1,0 +1,22 @@
+---
+import SuiteResultsPage from "../../../../components/llm-tests/SuiteResultsPage.astro";
+import resultsYaml from "../../../../data/llm-tests/simple-tama-agentic-workflow-q1-2026/gpt-5-mini/results.yml?raw";
+
+export const prerender = true;
+
+const site = Astro.site ?? new URL("https://upmaru.com");
+const pageImage = new URL(
+  "/llm-tests/simple-tama-agentic-workflow-q1-2026/gpt-5-mini.png",
+  site,
+).toString();
+---
+
+<SuiteResultsPage
+  pageTitle="GPT 5 Mini | Simple Tama Agentic Workflow - Q1 2026 | Upmaru"
+  pageDescription="GPT 5 Mini results for the Simple Tama Agentic Workflow Q1 2026 test run."
+  pageImage={pageImage}
+  backHref="/llm-tests/simple-tama-agentic-workflow-q1-2026"
+  fallbackSuiteName="GPT 5 Mini"
+  resultsYaml={resultsYaml}
+  summaryText="Output and timing analysis for the GPT 5 Mini suite in the agentic workflow."
+/>

@@ -1,0 +1,349 @@
+suite: GPT 5 Mini
+youtube:
+inference_provider: OpenAI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:01:12.948187
+        updated_at: 2026-03-13 09:01:14.564412
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.99,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:01:14.585349
+        updated_at: 2026-03-13 09:01:19.656817
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 10,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:01:19.668248
+        updated_at: 2026-03-13 09:01:21.179823
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.99,
+            "referenced_tool_call_ids": [
+              "call_M5A5v68e5k69292QBQ7EyMdM"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:01:21.201016
+        updated_at: 2026-03-13 09:01:23.716003
+        output: |
+          {
+            "path": {
+              "message_id": "019ce66d-aac1-7aae-84eb-21e7bf8b19f2"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "call_M5A5v68e5k69292QBQ7EyMdM"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-13 09:01:23.727441
+        updated_at: 2026-03-13 09:01:31.41086
+        output: |
+          Nice — I pulled the top 10 movies from the database for you! I created a display artifact you can see now. Here’s a quick, friendly summary of what I found and why these made the list:\n\nWhat I searched for\n- Movies with at least 500 votes, sorted first by Average Rating (highest to lowest) then by Number of Votes.\n\nTop 10 movies returned (highlights)\n- The Wild Robot — Highest Average Rating at 8.318 with 5,561 votes.\n- Dune: Part Two — Strong Average Rating 8.131 with 7,469 votes.\n- Sonic the Hedgehog 3 — Average Rating 7.64 with 3,082 votes.\n- Deadpool & Wolverine — Average Rating 7.567 with 8,019 votes (highest number of votes in the list).\n- Inside Out 2 — Average Rating 7.548 with 6,307 votes.\n- Furiosa: A Mad Max Saga — Average Rating 7.5 with 4,542 votes.\n- Bad Boys: Ride or Die — Average Rating 7.346 with 3,139 votes.\n- The Beekeeper — Average Rating 7.269 with 3,915 votes.\n- Alien: Romulus — Average Rating 7.2 with 4,144 votes.\n- Conclave — Average Rating 7.2 with 3,056 votes.\n\nUseful bits shown in the artifact\n- Each movie’s poster image, basic synopsis, and the data points that determined the ranking: Average Rating and Number of Votes.\n- Release dates are included in the display (you can check the grid for exact dates).\n\nWant any of the following next?\n- Get more details for one of these (full cast, runtime, budget/revenue if available).\n- Filter by genre, year, or a different vote-count threshold.\n- Recommendations based on one of the titles above.\n\nWhich movie should we dive into first?
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:02:38.761622
+        updated_at: 2026-03-13 09:02:40.818187
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.9,
+            "referenced_tool_call_ids": [
+              "call_M5A5v68e5k69292QBQ7EyMdM"
+            ]
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:02:40.839094
+        updated_at: 2026-03-13 09:02:46.652906
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 25,
+                "type": "vector",
+                "intent": [
+                  "space, outer space, space station, astronauts, interstellar travel, sci-fi"
+                ],
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:02:46.673264
+        updated_at: 2026-03-13 09:02:48.339976
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "call_rxJ7F5H7DYWBGHcxVRAC1H0a"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:02:48.358219
+        updated_at: 2026-03-13 09:02:51.292689
+        output: |
+          {
+            "path": {
+              "message_id": "019ce66e-fa01-781f-b29f-de8f7e49fb8d"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "call_M5A5v68e5k69292QBQ7EyMdM",
+                  "call_rxJ7F5H7DYWBGHcxVRAC1H0a"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-13 09:02:51.30324
+        updated_at: 2026-03-13 09:02:54.262763
+        output: |
+          Got it — I searched the database for films set in space and found one match. I created a display artifact you can view now. Quick summary of the result:\n\nFound movie set in space\n- Alien: Romulus — Average Rating 7.2 with 4,144 votes. The synopsis indicates the story takes place on a derelict space station where young colonizers encounter a terrifying life form.\n\nWhat you can do next\n- Want full details for Alien: Romulus (cast, runtime, production info)?\n- Broaden the search to include space-adjacent settings (planets, interstellar travel) or lower the vote-count filter?\n- Or I can recommend other space-set movies not in this database if you’d like. Which would you prefer?
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:03:05.103539
+        updated_at: 2026-03-13 09:03:06.742624
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.9,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:03:06.762749
+        updated_at: 2026-03-13 09:03:10.813591
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 10,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:03:10.825152
+        updated_at: 2026-03-13 09:03:12.463163
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "call_vHs46hMiLKnxPoNH37cLdEis"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-13 09:03:12.48698
+        updated_at: 2026-03-13 09:03:15.105627
+        output: |
+          {
+            "path": {
+              "message_id": "019ce66f-60ee-7d52-af96-79650d81d68c"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "call_vHs46hMiLKnxPoNH37cLdEis"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: GPT 5 Mini
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-13 09:03:15.116735
+        updated_at: 2026-03-13 09:03:21.459265
+        output: |
+          Nice—I hunted the database for top-rated cartoons (Animation genre) with at least 500 votes and sorted by highest average rating, then vote count. I found three results and created a display you can see now. Here’s a friendly summary of what I pulled and the highlights:\n\nWhat I searched\n- Criteria: Animation movies, minimum 500 votes, sorted by Average Rating then Number of Votes.\n\nTop matches (high-level highlights)\n1. The Wild Robot\n   - Average Rating: 8.318\n   - Number of Votes: 5,561\n   - Note: A stranded robot named Roz bonds with island animals and cares for an orphaned gosling — a heartwarming survival/companion story.\n\n2. Inside Out 2\n   - Average Rating: 7.548\n   - Number of Votes: 6,307\n   - Note: Continues Riley’s emotional story with Joy, Sadness, Anger, Fear, Disgust and new/returning emotions navigating change.\n\n3. Kung Fu Panda 4\n   - Average Rating: 7.025\n   - Number of Votes: 3,305\n   - Note: Po is preparing to be a spiritual leader and must train a new Dragon Warrior while facing a new villain, the Chameleon.\n\nQuick commentary\n- The Wild Robot leads by Average Rating, while Inside Out 2 has the highest Number of Votes of the group.\n- All three are recent releases in 2024, so they reflect current audience tastes and newer animation tech and storytelling.\n\nIf you want\n- I can filter instead by decade, by family vs. adult animation, or by streaming availability.\n- Or I can list more animated titles (increase the limit) or show trailers, director/cast, or awards info for any of these. Which would you like next?
