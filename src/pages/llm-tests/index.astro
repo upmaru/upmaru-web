@@ -175,7 +175,8 @@ const faqs = [
                       alt={provider.alt}
                       class:list={[
                         "h-6 w-auto",
-                        provider.src === "/grok.svg" && "invert",
+                        ["/grok.svg", "/openai.svg"].includes(provider.src) &&
+                          "invert",
                       ]}
                       loading="lazy"
                     />

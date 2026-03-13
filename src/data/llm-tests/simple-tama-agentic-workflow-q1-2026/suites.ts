@@ -74,6 +74,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/grok.svg",
     iconAlt: "Grok icon",
   },
+  {
+    slug: "gpt-oss-120b",
+    title: "GPT OSS 120b",
+    description: "Test for GPT OSS 120b model in an agentic workflow",
+    iconSrc: "/openai.svg",
+    iconAlt: "GPT OSS 120b icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {
