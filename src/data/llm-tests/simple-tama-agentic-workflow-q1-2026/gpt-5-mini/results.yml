@@ -1,5 +1,5 @@
 suite: GPT 5 Mini
-youtube:
+youtube: https://www.youtube.com/watch?v=_5cLSZjcg-A
 inference_provider: OpenAI
 turns:
   - turn: 1
