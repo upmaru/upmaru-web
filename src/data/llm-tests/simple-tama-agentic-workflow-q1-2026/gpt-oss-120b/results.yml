@@ -1,5 +1,5 @@
 suite: GPT OSS 120b
-youtube:
+youtube: https://www.youtube.com/watch?v=ZqTa2heOCVQ
 inference_provider: Groq
 note: I generally will do 2 attempts for each model. For GPT OSS 120b the second attempt it failed to produce a valid response for the 3rd turn. GPT OSS 120b seems to be inconsistent based on my testing.
 turns:
