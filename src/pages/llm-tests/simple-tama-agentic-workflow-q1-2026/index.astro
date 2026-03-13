@@ -410,7 +410,9 @@ const summaryRows = suites.map((suite) => {
                         alt={suite.iconAlt || `${suite.title} icon`}
                         class:list={[
                           "mb-3 h-8 w-auto",
-                          suite.iconSrc === "/grok.svg" && "invert",
+                          ["/grok.svg", "/openai.svg"].includes(
+                            suite.iconSrc,
+                          ) && "invert",
                         ]}
                         loading="lazy"
                       />
@@ -745,7 +747,9 @@ const summaryRows = suites.map((suite) => {
                             alt={row.iconAlt}
                             class:list={[
                               "mx-auto h-5 w-auto",
-                              row.iconSrc === "/grok.svg" && "invert",
+                              ["/grok.svg", "/openai.svg"].includes(
+                                row.iconSrc,
+                              ) && "invert",
                             ]}
                             loading="lazy"
                           />
