@@ -1,0 +1,367 @@
+suite: Qwen 3.5
+youtube:
+inference_provider: TogetherAI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:34:43.30663
+        updated_at: 2026-03-16 07:34:50.34279
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:34:50.361666
+        updated_at: 2026-03-16 07:34:53.866806
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "limit": 10,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:34:53.87742
+        updated_at: 2026-03-16 07:34:58.821687
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "call_a38accf728af447c8e5957ae"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:34:58.843605
+        updated_at: 2026-03-16 07:35:02.896877
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_a38accf728af447c8e5957ae"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cf591-8ed4-7f10-aab5-57e02524ecf0"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-16 07:35:02.90891
+        updated_at: 2026-03-16 07:35:22.899509
+        output: |
+          \n\nHey there, movie lover! 🎬 I’ve just dug up the top 10 highest-rated movies in the database, and let me tell you, it’s a fantastic lineup! From heartwarming tales to action-packed adventures, these films have earned their spot with glowing reviews and tons of votes.\n\nHere’s a quick peek at the cream of the crop:\n\n1. **The Wild Robot** – This charming story about a robot stranded on an island has an Average Rating of 8.318 with 5,561 votes. It’s like “Wall-E” meets “The Little Prince,” and audiences are loving it!\n2. **Dune: Part Two** – Paul Atreides’ epic saga continues with an Average Rating of 8.131 from 7,469 voters. Sci-fi fans are practically chanting “Kwisatz Haderach!”\n3. **Sonic the Hedgehog 3** – Speeding in with an Average Rating of 7.64 and 3,082 votes, Sonic and friends are back to save the world from a mysterious new villain.\n4. **Deadpool & Wolverine** – The morally flexible mercenary and the reluctant Wolverine team up! With an Average Rating of 7.567 from 8,019 votes, it’s a raucous, hilarious hit.\n5. **Inside Out 2** – Riley’s mind gets a renovation! Anxiety joins the emotional crew, earning an Average Rating of 7.548 from 6,307 votes. It’s heartfelt and funny!\n6. **Furiosa: A Mad Max Saga** – Young Furiosa’s wild journey through the wasteland scores an Average Rating of 7.5 with 4,542 votes. Action fans are cheering!\n7. **Bad Boys: Ride or Die** – Mike and Marcus are back, clearing their captain’s name while running for their lives. It’s got an Average Rating of 7.346 from 3,139 votes.\n8. **The Beekeeper** – One man’s vengeance campaign takes on national stakes! With an Average Rating of 7.269 from 3,915 votes, it’s a tense thriller.\n9. **Alien: Romulus** – Young space colonizers face the universe’s most terrifying life form. It’s got an Average Rating of 7.2 from 4,144 votes. Horror fans are buzzing!\n10. **Conclave** – A cardinal navigates a conspiracy while electing a new Pope. With an Average Rating of 7.2 from 3,056 votes, it’s a gripping drama.\n\nI’ve created a visual grid for you to explore these titles further—check it out for posters, release dates, and more details! Which one are you itching to watch first? Or maybe you’d like recommendations based on one of these? Let’s chat! 🍿
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:35:43.452772
+        updated_at: 2026-03-16 07:35:51.669923
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:35:51.691676
+        updated_at: 2026-03-16 07:36:16.51279
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "intent": "space, outer space, space travel, astronauts, space station, cosmic, interstellar, galaxy, universe, sci-fi space",
+                "limit": 25,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "vector"
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:16.529551
+        updated_at: 2026-03-16 07:36:22.084478
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": [
+              "call_8c363e8335254edeaab7f055"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:22.105958
+        updated_at: 2026-03-16 07:36:25.083
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "configuration": {
+                  "columns": [
+                    {
+                      "name": "title",
+                      "relevance": 10
+                    },
+                    {
+                      "name": "overview",
+                      "relevance": 8
+                    },
+                    {
+                      "name": "vote_average",
+                      "relevance": 6
+                    },
+                    {
+                      "name": "vote_count",
+                      "relevance": 5
+                    },
+                    {
+                      "name": "release_date",
+                      "relevance": 4
+                    }
+                  ]
+                },
+                "references": [
+                  "call_8c363e8335254edeaab7f055"
+                ],
+                "type": "table"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cf592-79c9-7470-885d-e46510854ee2"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-16 07:36:25.097111
+        updated_at: 2026-03-16 07:36:33.053536
+        output: |
+          \n\nHey there, space explorer! 🚀 I dug into the cosmic corners of the movie database and found a couple of films that drift through the stars. Here's what popped up:\n\n1. **Alien: Romulus** (Released August 13, 2024)  \n   - **Average Rating**: 7.2/10 (from 4,144 votes)  \n   - **Plot**: Young colonizers scavenging a derelict space station encounter the universe's most terrifying life form. Classic *Alien* tension meets deep-space horror!  \n\n2. **Venom: The Last Dance** (Released October 22, 2024)  \n   - **Average Rating**: 6.7/10 (from 3,899 votes)  \n   - **Plot**: Eddie and Venom go on a run, but this one's more Earth-bound chaos than space adventure. Might've slipped in due to its sci-fi vibes!  \n\nThe search leaned heavily on *Alien: Romulus* for pure space thrills. For more details (like posters or full summaries), check the displayed table above! 🌌 Want me to hunt for more space epics like *Interstellar* or *The Expanse*? Just say the word!
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:42.493094
+        updated_at: 2026-03-16 07:36:48.260531
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.92,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:48.280707
+        updated_at: 2026-03-16 07:36:55.541244
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  },
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  }
+                ],
+                "limit": 10,
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ],
+                "type": "all"
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:55.552446
+        updated_at: 2026-03-16 07:36:57.998221
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "call_3b5089eb5fd6455bae1544fc"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 07:36:58.018328
+        updated_at: 2026-03-16 07:37:01.383397
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "index": 0,
+                "references": [
+                  "call_3b5089eb5fd6455bae1544fc"
+                ],
+                "type": "grid"
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cf593-6071-775b-b2d3-07c90a8c2574"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Qwen 3.5 397B A17B
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-16 07:37:01.394558
+        updated_at: 2026-03-16 07:37:13.60266
+        output: |
+          \n\nHey there! I've dug up some of the absolute best animated movies that are topping the charts right now. It's like a treasure hunt for gold, but instead of gold, we found incredible stories and stunning animation! 🎬✨\n\nHere are the top hits I found for you:\n\n1.  **The Wild Robot** - This one is a real gem! It has an **Average Rating** of 8.3 from over 5,500 voters. The story follows a clever robot named Roz who gets stranded on an island and has to bond with local wildlife to survive. It's got heart, adventure, and some serious emotional depth.\n2.  **Inside Out 2** - You can't go wrong with Pixar! This sequel dives into Riley's mind as new emotions like Anxiety join the crew. It holds a solid **Average Rating** of 7.5 with more than 6,300 votes. It's a funny, touching, and relatable look at growing up.\n3.  **Kung Fu Panda 4** - Po is back! In this adventure, he's looking for a new Dragon Warrior while facing a villainous Chameleon. With an **Average Rating** of 7.0 from 3,300 fans, it's a fun, action-packed ride for all ages.\n\nI've put together a visual display of these movies so you can see their posters and get a quick vibe of what they're about. Check out the grid below!\n\nIf you're looking for something specific—like classic 90s cartoons, TV series, or maybe something from a particular studio—just let me know, and I'll refine the search! Happy watching! 🍿

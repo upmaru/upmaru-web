@@ -95,6 +95,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/nvidia.svg",
     iconAlt: "NVIDIA icon",
   },
+  {
+    slug: "qwen-3-5",
+    title: "Qwen 3.5",
+    description: "Test for Qwen 3.5 model in an agentic workflow",
+    iconSrc: "/qwen.svg",
+    iconAlt: "Qwen icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {
