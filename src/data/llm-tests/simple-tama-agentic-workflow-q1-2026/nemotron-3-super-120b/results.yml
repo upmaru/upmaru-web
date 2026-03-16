@@ -1,5 +1,5 @@
 suite: Nemotron 3 Super 120b
-youtube:
+youtube: https://www.youtube.com/watch?v=5CES0NUNK4I
 inference_provider: Nebius
 turns:
   - turn: 1
