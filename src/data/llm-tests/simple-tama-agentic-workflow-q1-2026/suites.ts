@@ -88,6 +88,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/openai.svg",
     iconAlt: "GPT 5 Mini icon",
   },
+  {
+    slug: "nemotron-3-super-120b",
+    title: "Nemotron 3 Super 120b",
+    description: "Test for Nemotron 3 Super 120b model in an agentic workflow",
+    iconSrc: "/nvidia.svg",
+    iconAlt: "NVIDIA icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {
