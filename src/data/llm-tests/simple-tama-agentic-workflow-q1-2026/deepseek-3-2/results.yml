@@ -1,0 +1,275 @@
+suite: DeepSeek 3.2
+youtube:
+inference_provider: Fireworks AI
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:08.768652
+        updated_at: 2026-03-16 10:32:15.425014
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:15.44426
+        updated_at: 2026-03-16 10:32:19.842819
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "all",
+                "limit": 10,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 500
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:19.852932
+        updated_at: 2026-03-16 10:32:22.116225
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-bf282dc4e810751e"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:22.135045
+        updated_at: 2026-03-16 10:32:28.143318
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-bf282dc4e810751e"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cf633-fea3-7247-a52c-dad931d982a1"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-16 10:32:28.155478
+        updated_at: 2026-03-16 10:32:34.842351
+        output: |
+          Here you go! I’ve grabbed the **top 10 movies** from our database, sorted by their **average rating** (and with at least **500 votes** to make sure we’re looking at popular titles).\n\nYou can see all the movies displayed above in a handy grid—posters, titles, release dates, and ratings are all there!\n\nA few quick highlights from the top of the list:\n\n- 🥇 **The Wild Robot** leads the pack with an **8.318 average rating** and more than 5,500 votes. It’s a beautifully animated story of survival and connection that resonated with both critics and audiences.\n\n- 🏜️ **Dune: Part Two** is right behind with an **8.131 rating** and nearly 7,500 votes. It’s the epic sci‑fi sequel that absolutely crushed the box office and became a cultural event.\n\n- 🦔 **Sonic the Hedgehog 3** rounds out the top three with a solid **7.64 rating** and over 3,000 votes. The Blue Blur and his pals are back for more high‑speed fun!\n\nThe rest of the list includes some of the biggest blockbusters and fan‑favorites from 2024—**Deadpool & Wolverine**, **Inside Out 2**, **Furiosa**, and more—all sporting impressive ratings and huge vote counts.\n\nFeel free to scroll through the grid above. If any of these catch your eye, I’d be happy to dive deeper into the cast, trivia, or where you can stream them! 🍿
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:45.441202
+        updated_at: 2026-03-16 10:32:51.743345
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.95,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:51.763653
+        updated_at: 2026-03-16 10:32:56.478094
+        output: |
+          {
+            "body": {
+              "search": {
+                "classes": [
+                  {
+                    "name": "movie-details",
+                    "space": "movie-db"
+                  }
+                ],
+                "type": "vector",
+                "intent": [
+                  "space, outer space, astronauts, spaceships, interstellar, sci-fi space"
+                ],
+                "limit": 25,
+                "filter": [
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ],
+                "sort": [
+                  {
+                    "by": "vote_average",
+                    "direction": "desc"
+                  },
+                  {
+                    "by": "vote_count",
+                    "direction": "desc"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:56.50163
+        updated_at: 2026-03-16 10:32:59.708079
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.9,
+            "referenced_tool_call_ids": [
+              "chatcmpl-tool-8442b04adb050a75"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-16 10:32:59.729902
+        updated_at: 2026-03-16 10:33:04.442788
+        output: |
+          {
+            "body": {
+              "artifact": {
+                "references": [
+                  "chatcmpl-tool-8442b04adb050a75"
+                ],
+                "type": "grid",
+                "index": 0
+              }
+            },
+            "next": null,
+            "path": {
+              "message_id": "019cf634-8df9-7740-a455-2806aa1eff49"
+            }
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: markdown_quote
+        score: 0
+        inserted_at: 2026-03-16 10:33:04.454133
+        updated_at: 2026-03-16 10:33:10.407422
+        output: |
+          \n\n
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: DeepSeek 3.2
+        output_format: json
+        score:
+        inserted_at:
+        updated_at:
+        output: ""
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score:
+        inserted_at:
+        updated_at:
+        output: ""
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: DeepSeek 3.2
+        output_format: json
+        score:
+        inserted_at:
+        updated_at:
+        output: ""
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: json
+        score:
+        inserted_at:
+        updated_at:
+        output: ""
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: DeepSeek 3.2
+        output_format: markdown_quote
+        score:
+        inserted_at:
+        updated_at:
+        output: ""

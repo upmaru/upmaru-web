@@ -102,6 +102,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/qwen.svg",
     iconAlt: "Qwen icon",
   },
+  {
+    slug: "deepseek-3-2",
+    title: "DeepSeek 3.2",
+    description: "Test for DeepSeek 3.2 model in an agentic workflow",
+    iconSrc: "/deepseek.svg",
+    iconAlt: "DeepSeek icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {
