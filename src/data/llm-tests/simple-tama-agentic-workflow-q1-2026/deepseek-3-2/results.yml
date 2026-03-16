@@ -225,7 +225,10 @@ turns:
         updated_at: 2026-03-16 10:33:10.407422
         output: |
           \n\n
-        remark: DeepSeek 3.2 failed to produce output for the second turn's response. Sometimes it would do it and other times it would not. This is considered a failed test because in production you cannot have a model decide it doesn't want to output a response.
+        remark: |
+          DeepSeek 3.2 failed to produce output for the second turn's response. Sometimes it would do it and other times it would not. This is considered a failed test because in production you cannot have a model decide it doesn't want to output a response.
+
+          DeepSeek 3.2 is the only model that does this.
   - turn: 3
     message: Can you find me the top cartoons?
     tasks:
