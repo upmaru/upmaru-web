@@ -17,6 +17,8 @@ const {
   title = defaultTitle,
   description = defaultDescription,
   image = defaultImage,
+  rssHref,
+  rssTitle,
 } = Astro.props;
 const pathname = Astro.url.pathname;
 const showTopTabs =
@@ -55,6 +57,16 @@ const isLlmTestsPath = pathname.startsWith("/llm-tests");
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
+    {
+      rssHref && (
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={rssTitle || `${title} RSS Feed`}
+          href={rssHref}
+        />
+      )
+    }
   </head>
   <body class="min-h-screen bg-base-200 text-base-content">
     <main>
