@@ -28,7 +28,21 @@ turns:
         inserted_at: 2026-03-17 03:08:32.283747
         updated_at: 2026-03-17 03:08:33.899193
         output: |
-          "{\"body\": {\"search\": {\"limit\": 10, \"type\": \"all\", \"classes\": [{\"space\": \"movie-db\", \"name\": \"movie-details\"}]}}, \"next\": null}"
+          {
+            "body": {
+              "search": {
+                "limit": 10,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
@@ -54,7 +68,21 @@ turns:
         inserted_at: 2026-03-17 03:08:34.591378
         updated_at: 2026-03-17 03:08:35.689564
         output: |
-          "{\"path\": {\"message_id\": \"019cf9c4-34d6-79d8-b5b1-84b8248c3db0\"}, \"body\": {\"artifact\": {\"type\": \"grid\", \"index\": 0, \"references\": [\"n7mPwUEXE\"]}}, \"next\": null}"
+          {
+            "path": {
+              "message_id": "019cf9c4-34d6-79d8-b5b1-84b8248c3db0"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "n7mPwUEXE"
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
@@ -91,7 +119,24 @@ turns:
         inserted_at: 2026-03-17 03:08:57.392922
         updated_at: 2026-03-17 03:09:00.112027
         output: |
-          "{\"body\": {\"search\": {\"limit\": 25, \"type\": \"vector\", \"intent\": [\"space setting, interstellar travel, zero gravity, sci-fi adventure, cosmic exploration\"], \"classes\": [{\"space\": \"movie-db\", \"name\": \"movie-details\"}]}}, \"next\": null}"
+          {
+            "body": {
+              "search": {
+                "limit": 25,
+                "type": "vector",
+                "intent": [
+                  "space setting, interstellar travel, zero gravity, sci-fi adventure, cosmic exploration"
+                ],
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
@@ -118,7 +163,21 @@ turns:
         inserted_at: 2026-03-17 03:09:00.871035
         updated_at: 2026-03-17 03:09:01.976832
         output: |
-          "{\"path\": {\"message_id\": \"019cf9c4-974f-7924-9580-cd0d19608a0e\"}, \"body\": {\"artifact\": {\"type\": \"grid\", \"index\": 0, \"references\": [\"5szWxLXhb\"]}}, \"next\": null}"
+          {
+            "path": {
+              "message_id": "019cf9c4-974f-7924-9580-cd0d19608a0e"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "5szWxLXhb"
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
@@ -155,7 +214,39 @@ turns:
         inserted_at: 2026-03-17 03:09:20.459235
         updated_at: 2026-03-17 03:09:22.361743
         output: |
-          "{\"body\": {\"search\": {\"limit\": 25, \"type\": \"all\", \"classes\": [{\"space\": \"movie-db\", \"name\": \"movie-details\"}], \"filter\": [{\"by\": \"genres.name\", \"type\": \"nested\", \"value\": {\"path\": \"genres\", \"type\": \"term\", \"value\": \"Animation\"}}, {\"by\": \"vote_count\", \"type\": \"range\", \"value\": {\"from\": 100}}]}}, \"next\": null}"
+          {
+            "body": {
+              "search": {
+                "limit": 25,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  },
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 3
         name: routing
         chain: Chat Media Search
@@ -181,7 +272,21 @@ turns:
         inserted_at: 2026-03-17 03:09:23.115861
         updated_at: 2026-03-17 03:09:24.197573
         output: |
-          "{\"path\": {\"message_id\": \"019cf9c4-f158-7e7f-81e5-83630a9fd5c8\"}, \"body\": {\"artifact\": {\"type\": \"grid\", \"index\": 0, \"references\": [\"6WR6Ae3uR\"]}}, \"next\": null}"
+          {
+            "path": {
+              "message_id": "019cf9c4-f158-7e7f-81e5-83630a9fd5c8"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "6WR6Ae3uR"
+                ]
+              }
+            },
+            "next": null
+          }
       - id: 5
         name: stream-response
         chain: Memovee Chat Response with Artifact
