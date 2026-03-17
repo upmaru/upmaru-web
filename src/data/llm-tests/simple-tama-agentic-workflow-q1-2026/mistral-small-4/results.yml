@@ -43,6 +43,20 @@ turns:
             },
             "next": null
           }
+        remark: |
+          I tried adding `reasoning_effort = "high"`. It did not make a difference. `/console/flows/019cf9d2-45b9-7598-9da8-dd1fbae017c6`
+
+          This was the reasoning output:
+
+          > The user wants to see the top 10 movies in the database. This is a "top movies" request, which implies they want the highest-rated movies. I should:
+          >
+          > 1. Use `type: "all"` since this is a browse/list request
+          > 2. Set `limit: 10` as requested
+          > 3. Include a `vote_count` filter to ensure we only get movies with significant votes, using the default of `from: 100` for non-regional context
+          > 4. Sort by `vote_average` descending first, then `vote_count` descending to get the highest-rated movies with the most votes
+          > 5. Use the default browse ordering
+          >
+          > Let me construct the query accordingly.
       - id: 3
         name: routing
         chain: Chat Media Search
