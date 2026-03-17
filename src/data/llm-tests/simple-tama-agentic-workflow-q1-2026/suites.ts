@@ -109,6 +109,13 @@ export const simpleTamaQ12026Suites: LlmTestSuiteMeta[] = [
     iconSrc: "/deepseek.svg",
     iconAlt: "DeepSeek icon",
   },
+  {
+    slug: "mistral-small-4",
+    title: "Mistral Small 4",
+    description: "Test for Mistral Small 4 model in an agentic workflow",
+    iconSrc: "/m-rainbow.svg",
+    iconAlt: "Mistral Small 4 icon",
+  },
 ];
 
 export const llmTestRunMeta: LlmTestRunMeta = {

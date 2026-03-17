@@ -1,0 +1,299 @@
+suite: Mistral Small 4
+youtube:
+inference_provider: Mistral
+turns:
+  - turn: 1
+    message: Can you find me the top 10 movies in the database?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:08:31.470156
+        updated_at: 2026-03-17 03:08:32.261169
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 0
+        inserted_at: 2026-03-17 03:08:32.283747
+        updated_at: 2026-03-17 03:08:33.899193
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 10,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:08:33.909646
+        updated_at: 2026-03-17 03:08:34.572027
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 1.0,
+            "referenced_tool_call_ids": [
+              "n7mPwUEXE"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:08:34.591378
+        updated_at: 2026-03-17 03:08:35.689564
+        output: |
+          {
+            "path": {
+              "message_id": "019cf9c4-34d6-79d8-b5b1-84b8248c3db0"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "n7mPwUEXE"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-17 03:08:35.700033
+        updated_at: 2026-03-17 03:08:36.560892
+        output: |
+          Alright, buddy! Here are the top 10 movies in the database right now, fresh from the digital vault! 🎬🍿\n\nCheck out the grid below—it’s got all the juicy details you need to pick your next movie night winner!
+  - turn: 2
+    message: Can you find me movies that take place in space?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:08:56.661562
+        updated_at: 2026-03-17 03:08:57.369953
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:08:57.392922
+        updated_at: 2026-03-17 03:09:00.112027
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 25,
+                "type": "vector",
+                "intent": [
+                  "space setting, interstellar travel, zero gravity, sci-fi adventure, cosmic exploration"
+                ],
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:00.127415
+        updated_at: 2026-03-17 03:09:00.850968
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "n7mPwUEXE",
+              "5szWxLXhb"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:00.871035
+        updated_at: 2026-03-17 03:09:01.976832
+        output: |
+          {
+            "path": {
+              "message_id": "019cf9c4-974f-7924-9580-cd0d19608a0e"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "5szWxLXhb"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-17 03:09:01.987625
+        updated_at: 2026-03-17 03:09:03.951588
+        output: |
+          Ohhh, space—the final frontier! 🚀 Let me beam you up some of the most thrilling movies set in the cosmos.\n\n---\n\n### 🌌 **Space Adventures Await!**\n\nHere are a couple of **space-setting** movies that’ll make you feel like you’re floating among the stars:\n\n1. **Alien: Romulus** (2024)\n   - **Overview:** A group of young space colonizers stumble upon a derelict space station and face off against the universe’s most terrifying life form.\n   - **Average Rating:** 7.2 ⭐ (from 4,144 votes!)\n\n2. **Venom: The Last Dance** (2024)\n   - **Overview:** Eddie and Venom are on the run, hunted by both their worlds, and forced into a devastating decision that’ll bring their last dance to a close.\n   - **Average Rating:** 6.67 ⭐ (from 3,899 votes!)\n\n---\nWant more? There’s a whole universe of space movies out there—let me know if you’d like to explore more! 🌠
+  - turn: 3
+    message: Can you find me the top cartoons?
+    tasks:
+      - id: 1
+        name: routing
+        chain: Chat Router
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:19.727737
+        updated_at: 2026-03-17 03:09:20.438894
+        output: |
+          {
+            "class": "chat-media-search",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": []
+          }
+      - id: 2
+        name: query-database
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:20.459235
+        updated_at: 2026-03-17 03:09:22.361743
+        output: |
+          {
+            "body": {
+              "search": {
+                "limit": 25,
+                "type": "all",
+                "classes": [
+                  {
+                    "space": "movie-db",
+                    "name": "movie-details"
+                  }
+                ],
+                "filter": [
+                  {
+                    "by": "genres.name",
+                    "type": "nested",
+                    "value": {
+                      "path": "genres",
+                      "type": "term",
+                      "value": "Animation"
+                    }
+                  },
+                  {
+                    "by": "vote_count",
+                    "type": "range",
+                    "value": {
+                      "from": 100
+                    }
+                  }
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 3
+        name: routing
+        chain: Chat Media Search
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:22.372198
+        updated_at: 2026-03-17 03:09:23.097119
+        output: |
+          {
+            "class": "response-with-artifact",
+            "confidence": 0.98,
+            "referenced_tool_call_ids": [
+              "6WR6Ae3uR"
+            ]
+          }
+      - id: 4
+        name: create-artifact
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: json
+        score: 2
+        inserted_at: 2026-03-17 03:09:23.115861
+        updated_at: 2026-03-17 03:09:24.197573
+        output: |
+          {
+            "path": {
+              "message_id": "019cf9c4-f158-7e7f-81e5-83630a9fd5c8"
+            },
+            "body": {
+              "artifact": {
+                "type": "grid",
+                "index": 0,
+                "references": [
+                  "6WR6Ae3uR"
+                ]
+              }
+            },
+            "next": null
+          }
+      - id: 5
+        name: stream-response
+        chain: Memovee Chat Response with Artifact
+        model: Mistral Small 4
+        output_format: markdown_quote
+        score: 2
+        inserted_at: 2026-03-17 03:09:24.20811
+        updated_at: 2026-03-17 03:09:26.177528
+        output: |
+          Hey there, movie buff! 🎬✨ I’ve got the *top-rated* animated movies for you, and they’re all hitting the mark with critics and audiences alike! Here’s the scoop on the crème de la crème:\n\n- **Inside Out 2** (2024) – A whopping **7.5 Average Rating** with over **6,300 votes**! Riley’s emotions are back, and let’s just say *Anxiety* is the new uninvited guest at headquarters. 😅\n- **Kung Fu Panda 4** (2024) – Po’s back with a **7.0 Average Rating** and **3,300+ votes**, proving that even pandas can balance humor and heart-pounding action.\n- **The Wild Robot** (2024) – This one’s a hidden gem with an **8.3 Average Rating** and **5,500+ votes**! A robot stranded on an island bonding with animals? It’s as wholesome as it sounds. 🦢🤖
