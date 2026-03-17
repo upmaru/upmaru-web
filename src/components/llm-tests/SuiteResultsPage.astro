@@ -904,6 +904,14 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
     margin: 0.5rem 0;
   }
 
+  .step-remark :where(blockquote) {
+    margin: 0.75rem 0;
+    border-left: 4px solid var(--color-warning);
+    background: color-mix(in oklab, var(--color-base-100) 90%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
   .step-remark :where(ul, ol) {
     margin: 0.25rem 0;
     padding-left: 1.25rem;
