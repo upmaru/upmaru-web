@@ -1,5 +1,5 @@
 suite: Mistral Small 4
-youtube:
+youtube: https://www.youtube.com/watch?v=4_giltDdrqk
 inference_provider: Mistral
 turns:
   - turn: 1
