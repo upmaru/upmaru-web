@@ -34,18 +34,16 @@ export const GET: APIRoute = async ({ props }) => {
         .filter((iconPath): iconPath is string => Boolean(iconPath)),
     ),
   );
+  const image = await generateOgImageForLlmTestRun({
+    title: run.title,
+    description: run.description,
+    iconPaths,
+  });
 
-  return new Response(
-    await generateOgImageForLlmTestRun({
-      title: run.title,
-      description: run.description,
-      iconPaths,
-    }),
-    {
-      headers: {
-        "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=31536000, immutable",
-      },
+  return new Response(new Uint8Array(image), {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000, immutable",
     },
-  );
+  });
 };

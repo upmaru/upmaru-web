@@ -1,4 +1,16 @@
 ---
+const {
+  heading = "Stay notified when new LLM test results are published.",
+  mailingListId = "cmm31vjaz88ra0i2o0o0laltw",
+  source = "LLM Tests Newsletter",
+  successMessage = "Subscribed. We will notify you when new results are published.",
+} = Astro.props as {
+  heading?: string;
+  mailingListId?: string;
+  source?: string;
+  successMessage?: string;
+};
+
 const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAACicBbaHrPHs0g29";
 const hasTurnstile = Boolean(turnstileSiteKey);
@@ -25,15 +37,18 @@ const subscribeEndpoint = "/api/newsletter/subscribe";
       <h2
         class="max-w-2xl text-3xl font-semibold tracking-tight text-base-content sm:text-4xl xl:flex-auto"
       >
-        Stay notified when new LLM test results are published.
+        {heading}
       </h2>
 
       <form
         data-newsletter-form
+        data-success-message={successMessage}
         action={subscribeEndpoint}
         method="post"
         class="mt-8 w-full max-w-xl space-y-4 xl:mt-0"
       >
+        <input type="hidden" name="mailingListId" value={mailingListId} />
+        <input type="hidden" name="source" value={source} />
         <input
           type="hidden"
           name="cf-turnstile-response"
@@ -199,7 +214,9 @@ const subscribeEndpoint = "/api/newsletter/subscribe";
             if (tokenInput instanceof HTMLInputElement) tokenInput.value = "";
             if (messageEl) {
               messageEl.textContent =
-                data.message || "Subscribed. You will hear from us soon.";
+                data.message ||
+                form.dataset.successMessage ||
+                "Subscribed. You will hear from us soon.";
               messageEl.className = "text-sm text-success";
             }
             if (

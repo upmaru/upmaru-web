@@ -1,13 +1,25 @@
 ---
 import { getCollection } from "astro:content";
 import Main from "../../layouts/Main.astro";
+import BlogPostIcon from "../../components/blog/BlogPostIcon.astro";
+import NewsletterSignup from "../../components/llm-tests/NewsletterSignup.astro";
+import { resolveBlogPostIcon } from "../../utils/blogIcons";
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
+const postsWithIcons = posts.map((post) => ({
+  post,
+  icon: resolveBlogPostIcon(post),
+}));
 ---
 
-<Main title="Blog | Upmaru" description="Articles and updates from Upmaru.">
+<Main
+  title="Blog | Upmaru"
+  description="Articles and updates from Upmaru."
+  rssHref="/blog/rss.xml"
+  rssTitle="Upmaru Blog Feed"
+>
   <div class="mx-auto flex w-full flex-col items-center px-6 pt-12 lg:pt-16">
     <a href="/" class="inline-flex">
       <img class="h-12 w-auto" src="/instellar-logo.png" alt="Upmaru" />
@@ -21,19 +33,43 @@ const posts = (await getCollection("blog")).sort(
       >
       <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Blog</h1>
       <p class="mt-3 text-base-content/70">Articles and product updates.</p>
+      <p class="mt-3">
+        <a
+          href="/blog/rss.xml"
+          class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary transition hover:border-primary/50 hover:bg-primary/15"
+          aria-label="Subscribe to the Upmaru Blog RSS feed"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="h-4 w-4 fill-current"
+            aria-hidden="true"
+          >
+            <path
+              d="M6.18 17.82a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28ZM4.54 10.46v2.18c3.79 0 6.82 3.03 6.82 6.82h2.18c0-4.96-4.04-9-9-9Zm0-4.36v2.18c6.19 0 11.18 4.99 11.18 11.18h2.18c0-7.38-5.98-13.36-13.36-13.36Z"
+            ></path>
+          </svg>
+          RSS Feed
+        </a>
+      </p>
     </div>
 
     <ul class="space-y-6">
       {
-        posts.map((post) => (
+        postsWithIcons.map(({ post, icon }) => (
           <li class="rounded-box border border-base-300 bg-base-100 p-5">
-            <p class="text-sm text-base-content/60">
-              {post.data.pubDate.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
+            <div class="mb-3 flex items-center gap-3">
+              <div class="rounded-box border border-primary/20 bg-primary/10 p-2 text-primary">
+                <BlogPostIcon icon={icon} class="h-5 w-5" />
+              </div>
+              <p class="text-sm text-base-content/60">
+                {post.data.pubDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
             <h2 class="mt-2 text-2xl font-semibold">
               <a href={`/blog/${post.slug}`} class="hover:underline">
                 {post.data.title}
@@ -48,4 +84,10 @@ const posts = (await getCollection("blog")).sort(
       }
     </ul>
   </section>
+  <NewsletterSignup
+    heading="Stay notified when new blog posts are published."
+    mailingListId="cmmwwn08a3rru0i2mdtnq9e9w"
+    source="Blog Newsletter"
+    successMessage="Subscribed. We will notify you when new blog posts are published."
+  />
 </Main>

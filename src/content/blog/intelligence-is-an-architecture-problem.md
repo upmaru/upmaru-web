@@ -421,4 +421,4 @@ For a more focused look at the search layer described in this post, you can expl
 
 The goal is not to demonstrate prompt cleverness. It is to demonstrate layered intelligence under constraint.
 
-Part II will explore how orchestration and runtime decision-making build on top of this retrieval foundation.
+Continue to [Part II: The Spectrum of Intelligence](/blog/the-spectrum-of-intelligence), where I make the task landscape explicit and show how determinism, validation, specialization, and cost of error shape the systems that can perform well in production.

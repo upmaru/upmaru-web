@@ -4,7 +4,9 @@ import { generateOgImageForSite } from "../utils/generateOgImages";
 export const prerender = true;
 
 export const GET: APIRoute = async () => {
-  return new Response(await generateOgImageForSite(), {
+  const image = await generateOgImageForSite();
+
+  return new Response(new Uint8Array(image), {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",

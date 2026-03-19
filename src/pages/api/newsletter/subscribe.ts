@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 
-const LOOPS_MAILING_LIST_ID = "cmm31vjaz88ra0i2o0o0laltw";
 const DEFAULT_LOOPS_FORM_ENDPOINT =
   "https://app.loops.so/api/newsletter-form/cm46nia1902myqjoedjvkq0dg";
 const TURNSTILE_VERIFY_ENDPOINT =
@@ -32,6 +31,8 @@ function getLoopsFormEndpoint() {
 
 type ParsedSubscribePayload = {
   email: string;
+  mailingListId: string;
+  source: string;
   turnstileToken: string;
 };
 
@@ -45,6 +46,8 @@ async function parseSubscribePayload(
     const params = new URLSearchParams(bodyText);
     return {
       email: String(params.get("email") ?? ""),
+      mailingListId: String(params.get("mailingListId") ?? ""),
+      source: String(params.get("source") ?? ""),
       turnstileToken: String(params.get("cf-turnstile-response") ?? ""),
     };
   }
@@ -52,6 +55,8 @@ async function parseSubscribePayload(
   const formData = await request.formData();
   return {
     email: String(formData.get("email") ?? ""),
+    mailingListId: String(formData.get("mailingListId") ?? ""),
+    source: String(formData.get("source") ?? ""),
     turnstileToken: String(formData.get("cf-turnstile-response") ?? ""),
   };
 }
@@ -156,15 +161,28 @@ export const GET: APIRoute = async () =>
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const { email: rawEmail, turnstileToken } =
-      await parseSubscribePayload(request);
+    const {
+      email: rawEmail,
+      mailingListId,
+      source,
+      turnstileToken,
+    } = await parseSubscribePayload(request);
 
     const email = rawEmail.trim().toLowerCase();
+    const normalizedMailingListId = mailingListId.trim();
+    const normalizedSource = source.trim() || "Newsletter";
 
     if (!email || !isValidEmail(email)) {
       return jsonResponse(400, {
         success: false,
         message: "Please enter a valid email address.",
+      });
+    }
+
+    if (!normalizedMailingListId) {
+      return jsonResponse(400, {
+        success: false,
+        message: "Newsletter is misconfigured. Please try again later.",
       });
     }
 
@@ -188,8 +206,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const loopsBody = new URLSearchParams({
       email,
-      mailingLists: LOOPS_MAILING_LIST_ID,
-      source: "LLM Tests Newsletter",
+      mailingLists: normalizedMailingListId,
+      source: normalizedSource,
     });
 
     let loopsResponse: Response;
@@ -233,7 +251,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     return jsonResponse(200, {
       success: true,
-      message: "Subscribed. We will notify you when new results are published.",
+      message: "Subscribed. We will notify you when new updates are published.",
     });
   } catch (error) {
     console.error("[newsletter/subscribe] unexpected error", error);
