@@ -17,19 +17,17 @@ export function getStaticPaths() {
 
 export const GET: APIRoute = async ({ props }) => {
   const { suite } = props as { suite: LlmTestSuiteMeta };
+  const image = await generateOgImageForLlmTest({
+    runLabel: SIMPLE_TAMA_Q1_2026_RUN_LABEL,
+    title: suite.title,
+    description: suite.description,
+    iconPath: suite.iconSrc,
+  });
 
-  return new Response(
-    await generateOgImageForLlmTest({
-      runLabel: SIMPLE_TAMA_Q1_2026_RUN_LABEL,
-      title: suite.title,
-      description: suite.description,
-      iconPath: suite.iconSrc,
-    }),
-    {
-      headers: {
-        "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=31536000, immutable",
-      },
+  return new Response(new Uint8Array(image), {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000, immutable",
     },
-  );
+  });
 };

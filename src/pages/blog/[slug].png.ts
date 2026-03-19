@@ -18,8 +18,9 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = async ({ props }) => {
   const { post } = props as { post: CollectionEntry<"blog"> };
+  const image = await generateOgImageForPost(post);
 
-  return new Response(await generateOgImageForPost(post), {
+  return new Response(new Uint8Array(image), {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",

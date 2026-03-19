@@ -888,13 +888,17 @@ const summaryRows = suites.map((suite) => {
 
 <script>
   const initializeSuiteSummarySorting = () => {
-    const tbody = document.getElementById("suite-summary-body");
+    const tbody = document.getElementById(
+      "suite-summary-body",
+    ) as HTMLTableSectionElement | null;
     if (!tbody || tbody.dataset.sortingInitialized === "true") return;
 
     const table = tbody.closest("table");
     if (!table) return;
 
-    const buttons = Array.from(table.querySelectorAll("[data-sort-key]"));
+    const buttons = Array.from(
+      table.querySelectorAll<HTMLButtonElement>("[data-sort-key]"),
+    );
     if (buttons.length === 0) return;
 
     tbody.dataset.sortingInitialized = "true";
@@ -902,7 +906,7 @@ const summaryRows = suites.map((suite) => {
     let activeKey = "";
     let direction = "desc";
 
-    const sortRows = (key) => {
+    const sortRows = (key: string) => {
       if (activeKey === key) {
         direction = direction === "desc" ? "asc" : "desc";
       } else {
@@ -910,7 +914,7 @@ const summaryRows = suites.map((suite) => {
         direction = "desc";
       }
 
-      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const rows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>("tr"));
       rows.sort((a, b) => {
         const aValue = Number(a.dataset[key] ?? -1);
         const bValue = Number(b.dataset[key] ?? -1);

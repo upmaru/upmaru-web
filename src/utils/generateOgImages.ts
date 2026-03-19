@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url);
 const FALLBACK_POST_ICON = "AiNetworkIcon";
 const ICON_NAME_PATTERN = /^[A-Za-z0-9]+Icon$/;
 type IconNode = [string, Record<string, string | number>];
+type ResvgConstructor = (typeof import("@resvg/resvg-js"))["Resvg"];
 
 function toArrayBuffer(buffer: Buffer): ArrayBuffer {
   return buffer.buffer.slice(
@@ -56,16 +57,23 @@ const options: SatoriOptions = {
   ],
 };
 
-let ResvgCtor: (typeof import("@resvg/resvg-js"))["Resvg"] | null = null;
+let ResvgCtor: ResvgConstructor | null = null;
 
-async function getResvg() {
-  if (!ResvgCtor) {
-    const modulePath = require.resolve("@resvg/resvg-js");
-    const resvgModule = await import(/* @vite-ignore */ modulePath);
-    ResvgCtor = resvgModule.Resvg;
+async function getResvg(): Promise<ResvgConstructor> {
+  if (ResvgCtor) {
+    return ResvgCtor;
   }
 
-  return ResvgCtor;
+  const modulePath = require.resolve("@resvg/resvg-js");
+  const resvgModule = await import(/* @vite-ignore */ modulePath);
+  const { Resvg } = resvgModule;
+
+  if (!Resvg) {
+    throw new Error("Failed to load Resvg constructor.");
+  }
+
+  ResvgCtor = Resvg;
+  return Resvg;
 }
 
 async function svgBufferToPngBuffer(svg: string) {
@@ -113,8 +121,9 @@ async function resolvePostOgIcon(iconName?: string): Promise<IconNode[]> {
     );
     return iconModule.default as IconNode[];
   } catch {
-    const fallbackModule =
-      await import("@hugeicons/core-free-icons/AiNetworkIcon");
+    const fallbackModule = await import(
+      /* @vite-ignore */ `@hugeicons/core-free-icons/${FALLBACK_POST_ICON}`
+    );
     return fallbackModule.default as IconNode[];
   }
 }
