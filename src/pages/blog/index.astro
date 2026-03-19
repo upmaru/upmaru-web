@@ -1,9 +1,18 @@
 ---
 import { getCollection } from "astro:content";
 import Main from "../../layouts/Main.astro";
+import BlogPostIcon from "../../components/blog/BlogPostIcon.astro";
+import NewsletterSignup from "../../components/llm-tests/NewsletterSignup.astro";
+import { resolveBlogPostIcon } from "../../utils/blogIcons";
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const postsWithIcons = await Promise.all(
+  posts.map(async (post) => ({
+    post,
+    icon: await resolveBlogPostIcon(post),
+  })),
 );
 ---
 
@@ -49,15 +58,20 @@ const posts = (await getCollection("blog")).sort(
 
     <ul class="space-y-6">
       {
-        posts.map((post) => (
+        postsWithIcons.map(({ post, icon }) => (
           <li class="rounded-box border border-base-300 bg-base-100 p-5">
-            <p class="text-sm text-base-content/60">
-              {post.data.pubDate.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
+            <div class="mb-3 flex items-center gap-3">
+              <div class="rounded-box border border-primary/20 bg-primary/10 p-2 text-primary">
+                <BlogPostIcon icon={icon} class="h-5 w-5" />
+              </div>
+              <p class="text-sm text-base-content/60">
+                {post.data.pubDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
             <h2 class="mt-2 text-2xl font-semibold">
               <a href={`/blog/${post.slug}`} class="hover:underline">
                 {post.data.title}
@@ -72,4 +86,10 @@ const posts = (await getCollection("blog")).sort(
       }
     </ul>
   </section>
+  <NewsletterSignup
+    heading="Stay notified when new blog posts are published."
+    mailingListId="cmmwwn08a3rru0i2mdtnq9e9w"
+    source="Blog Newsletter"
+    successMessage="Subscribed. We will notify you when new blog posts are published."
+  />
 </Main>

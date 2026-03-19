@@ -1,0 +1,29 @@
+---
+import type { BlogIconNode } from "../../utils/blogIcons";
+
+const {
+  icon,
+  class: className,
+} = Astro.props as {
+  icon: BlogIconNode[];
+  class?: string;
+};
+
+const body = icon
+  .map(
+    ([tag, attrs]) =>
+      `<${tag} ${Object.entries(attrs)
+        .map(([name, value]) => `${name}="${String(value)}"`)
+        .join(" ")} />`,
+  )
+  .join("");
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  class={className}
+  aria-hidden="true"
+  set:html={body}
+/>

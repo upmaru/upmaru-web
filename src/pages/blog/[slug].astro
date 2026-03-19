@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Main from "../../layouts/Main.astro";
+import NewsletterSignup from "../../components/llm-tests/NewsletterSignup.astro";
 
 export const prerender = true;
 
@@ -73,6 +74,12 @@ const ogImage = post.data.ogImage
       <Content />
     </div>
   </article>
+  <NewsletterSignup
+    heading="Stay notified when new blog posts are published."
+    mailingListId="cmmwwn08a3rru0i2mdtnq9e9w"
+    source="Blog Newsletter"
+    successMessage="Subscribed. We will notify you when new blog posts are published."
+  />
 </Main>
 
 <script>

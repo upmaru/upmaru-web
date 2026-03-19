@@ -2,6 +2,8 @@
 import { getCollection } from "astro:content";
 import Main from "../layouts/Main.astro";
 import ProductFlow from "../components/ProductFlow";
+import BlogPostIcon from "../components/blog/BlogPostIcon.astro";
+import { resolveBlogPostIcon } from "../utils/blogIcons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ContentWritingIcon,
@@ -17,6 +19,12 @@ const recentPosts = (
 )
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
+const recentPostsWithIcons = await Promise.all(
+  recentPosts.map(async (post) => ({
+    post,
+    icon: await resolveBlogPostIcon(post),
+  })),
+);
 ---
 
 <Main
@@ -314,15 +322,20 @@ const recentPosts = (
     {
       recentPosts.length > 0 ? (
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {recentPosts.map((post) => (
+          {recentPostsWithIcons.map(({ post, icon }) => (
             <article class="rounded-box border border-base-300 bg-base-100 p-5 shadow-sm">
-              <p class="text-sm text-base-content/60">
-                {post.data.pubDate.toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
+              <div class="mb-3 flex items-center gap-3">
+                <div class="rounded-box border border-primary/20 bg-primary/10 p-2 text-primary">
+                  <BlogPostIcon icon={icon} class="h-5 w-5" />
+                </div>
+                <p class="text-sm text-base-content/60">
+                  {post.data.pubDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
               <h3 class="mt-2 text-xl font-semibold text-primary">
                 <a href={`/blog/${post.slug}`} class="hover:underline">
                   {post.data.title}
