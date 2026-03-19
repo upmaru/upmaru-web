@@ -8,12 +8,10 @@ import { resolveBlogPostIcon } from "../../utils/blogIcons";
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
-const postsWithIcons = await Promise.all(
-  posts.map(async (post) => ({
-    post,
-    icon: await resolveBlogPostIcon(post),
-  })),
-);
+const postsWithIcons = posts.map((post) => ({
+  post,
+  icon: resolveBlogPostIcon(post),
+}));
 ---
 
 <Main

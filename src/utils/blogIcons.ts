@@ -1,28 +1,33 @@
 import type { CollectionEntry } from "astro:content";
+import {
+  AiNetworkIcon,
+  ChartRadarIcon,
+  Flowchart02Icon,
+} from "@hugeicons/core-free-icons";
 
 const FALLBACK_POST_ICON = "AiNetworkIcon";
-const ICON_NAME_PATTERN = /^[A-Za-z0-9]+Icon$/;
 
-export type BlogIconNode = [string, Record<string, string | number>];
+const BLOG_POST_ICONS = {
+  AiNetworkIcon,
+  ChartRadarIcon,
+  Flowchart02Icon,
+} as const;
 
-export async function resolveBlogPostIcon(
+type BlogIconName = keyof typeof BLOG_POST_ICONS;
+
+export type BlogIconNode = typeof AiNetworkIcon;
+
+function isSupportedBlogIcon(iconName: string): iconName is BlogIconName {
+  return Object.hasOwn(BLOG_POST_ICONS, iconName);
+}
+
+export function resolveBlogPostIcon(
   post: CollectionEntry<"blog">,
-): Promise<BlogIconNode[]> {
+): BlogIconNode {
   const requestedIcon = post.data.icon;
-  const safeIconName =
-    requestedIcon && ICON_NAME_PATTERN.test(requestedIcon)
-      ? requestedIcon
-      : FALLBACK_POST_ICON;
-
-  try {
-    const iconModule = await import(
-      /* @vite-ignore */ `@hugeicons/core-free-icons/${safeIconName}`
-    );
-    return iconModule.default as BlogIconNode[];
-  } catch {
-    const fallbackModule = await import(
-      /* @vite-ignore */ `@hugeicons/core-free-icons/${FALLBACK_POST_ICON}`
-    );
-    return fallbackModule.default as BlogIconNode[];
+  if (requestedIcon && isSupportedBlogIcon(requestedIcon)) {
+    return BLOG_POST_ICONS[requestedIcon];
   }
+
+  return BLOG_POST_ICONS[FALLBACK_POST_ICON];
 }
