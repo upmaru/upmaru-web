@@ -1,5 +1,5 @@
 suite: Kimi K2.5
-youtube: https://www.youtube.com/watch?v=EGEjfCRxYIw
+playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=EGEjfCRxYIw
 inference_provider: Fireworks AI
 turns:
   - turn: 1

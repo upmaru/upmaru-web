@@ -1,5 +1,5 @@
 suite: Mistral Small 4
-youtube: https://www.youtube.com/watch?v=4_giltDdrqk
+playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=4_giltDdrqk
 inference_provider: Mistral
 turns:
   - turn: 1

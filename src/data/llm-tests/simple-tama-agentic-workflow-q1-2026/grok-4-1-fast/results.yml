@@ -1,5 +1,5 @@
 suite: Grok 4.1 Fast
-youtube: https://www.youtube.com/watch?v=RCelZuWxqb8
+playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=RCelZuWxqb8
 inference_provider: xAI
 turns:
   - turn: 1
