@@ -1,5 +1,5 @@
 suite: Gemini 3.1
-playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=_ETWcIhcrkk
+playback_id: MF5uKO74sFov1x6aphDSd5OZf1iLssZUpFPUeRGlW01U
 inference_provider: Google AI Studio
 note: |
   Endpoint used: direct Google AI Studio OpenAI-compatible endpoint.
