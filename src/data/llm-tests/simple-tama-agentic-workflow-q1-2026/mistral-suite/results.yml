@@ -1,5 +1,5 @@
 suite: Mistral Suite
-youtube: https://www.youtube.com/watch?v=TGsP7RXkuwI
+playback_id: cclMvLGrTyymHyUn21DuPx4f7bD00jjXm4WPbYpfDaIE
 inference_provider: Mistral
 turns:
   - turn: 1

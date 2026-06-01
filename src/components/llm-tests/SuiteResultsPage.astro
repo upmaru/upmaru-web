@@ -11,6 +11,7 @@ import {
 import { FAILSAFE_SCHEMA, load } from "js-yaml";
 import { codeToHtml } from "shiki";
 import { marked } from "marked";
+import "plyr/dist/plyr.css";
 import {
   LATENCY_NORMALIZED_SCORE_SCALE,
   LATENCY_STEP_SCORE_RULES,
@@ -18,7 +19,11 @@ import {
   summarizeLatencyScore,
 } from "../../utils/llm-tests/latency";
 import { sumStepScores } from "../../utils/llm-tests/scoring";
-import { toYouTubeEmbedUrl } from "../../utils/llm-tests/media";
+import {
+  getMuxPlaybackUrl,
+  getMuxPosterUrl,
+  normalizeMuxPlaybackId,
+} from "../../utils/llm-tests/media";
 
 type Props = {
   pageTitle: string;
@@ -52,7 +57,9 @@ type ParsedTurn = {
 type ParsedResultsDocument = {
   suite: string;
   note: string;
-  youtubeEmbedUrl: string | null;
+  playbackId: string | null;
+  playbackUrl: string | null;
+  posterUrl: string | null;
   turns: ParsedTurn[];
 };
 
@@ -165,18 +172,24 @@ function parseResultsDocument(yamlText: string): ParsedResultsDocument {
     return {
       suite: "",
       note: "",
-      youtubeEmbedUrl: null,
+      playbackId: null,
+      playbackUrl: null,
+      posterUrl: null,
       turns: [],
     };
   }
 
-  const youtubeRaw = String(parsed.youtube ?? "").trim();
+  const playbackId = normalizeMuxPlaybackId(
+    String(parsed.playback_id ?? "").trim(),
+  );
   const noteRaw = String(parsed.note ?? "").trim();
 
   return {
     suite: String(parsed.suite ?? ""),
     note: noteRaw,
-    youtubeEmbedUrl: youtubeRaw ? toYouTubeEmbedUrl(youtubeRaw) : null,
+    playbackId,
+    playbackUrl: playbackId ? getMuxPlaybackUrl(playbackId) : null,
+    posterUrl: playbackId ? getMuxPosterUrl(playbackId) : null,
     turns: parseTurns(parsed),
   };
 }
@@ -466,20 +479,26 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
       )
     }
     {
-      parsedResults.youtubeEmbedUrl && (
+      parsedResults.playbackId && parsedResults.playbackUrl && (
         <div class="mt-8">
           <h2 class="text-xl font-semibold">Run Recording</h2>
-          <div class="mt-3 overflow-hidden rounded-box border border-base-300 bg-base-100">
+          <div class="mux-plyr-player mt-3 overflow-hidden rounded-box border border-base-300 bg-base-100">
             <div class="aspect-video w-full">
-              <iframe
+              <video
                 class="h-full w-full"
-                src={parsedResults.youtubeEmbedUrl}
-                title={`${parsedResults.suite || "Result"} YouTube recording`}
-                loading="lazy"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-              />
+                controls
+                playsinline
+                preload="metadata"
+                poster={parsedResults.posterUrl}
+                data-mux-plyr
+                data-playback-id={parsedResults.playbackId}
+                title={`${parsedResults.suite || "Result"} recording`}
+              >
+                <source
+                  src={parsedResults.playbackUrl}
+                  type="application/x-mpegURL"
+                />
+              </video>
             </div>
           </div>
         </div>
@@ -922,4 +941,186 @@ const overallLatencyScore = averageAcrossTurns(latencyScores, totalTurns);
     padding: 0.1rem 0.3rem;
     border-radius: 0.25rem;
   }
+
+  .mux-plyr-player {
+    --plyr-color-main: var(--color-primary);
+    --plyr-video-background: var(--color-base-300);
+  }
+
+  .mux-plyr-player .plyr,
+  .mux-plyr-player video {
+    height: 100%;
+    width: 100%;
+  }
 </style>
+
+<script>
+  type HlsInstance = {
+    attachMedia: (media: HTMLMediaElement) => void;
+    currentLevel: number;
+    destroy: () => void;
+    levels: Array<{
+      height?: number;
+    }>;
+    loadSource: (src: string) => void;
+    on: (event: string, callback: () => void) => void;
+  };
+
+  type HlsConstructor = {
+    Events: {
+      MANIFEST_PARSED: string;
+    };
+    isSupported: () => boolean;
+    new (): HlsInstance;
+  };
+
+  type PlyrConstructor = new (
+    target: HTMLVideoElement,
+    options?: Record<string, unknown>,
+  ) => {
+    destroy: () => void;
+  };
+
+  type MuxPlyrVideo = HTMLVideoElement & {
+    muxPlyr?: {
+      hls: HlsInstance | null;
+      player: {
+        destroy: () => void;
+      } | null;
+    };
+  };
+
+  let muxPlyrModulesPromise:
+    | Promise<{
+        Hls: HlsConstructor;
+        Plyr: PlyrConstructor;
+      }>
+    | null = null;
+
+  const getMuxPlaybackUrl = (playbackId: string) =>
+    `https://stream.mux.com/${encodeURIComponent(playbackId)}.m3u8`;
+
+  const autoQuality = 0;
+
+  function loadMuxPlyrModules() {
+    muxPlyrModulesPromise ??= Promise.all([
+      import("hls.js"),
+      import("plyr"),
+    ]).then(([hlsModule, plyrModule]) => ({
+      Hls: hlsModule.default as HlsConstructor,
+      Plyr: plyrModule.default as PlyrConstructor,
+    }));
+
+    return muxPlyrModulesPromise;
+  }
+
+  function getHlsQualityOptions(hls: HlsInstance) {
+    const levels = hls.levels
+      .map((level, index) => ({
+        height: Number(level.height),
+        index,
+      }))
+      .filter((level) => Number.isFinite(level.height) && level.height > 0);
+
+    const heights = Array.from(
+      new Set(levels.map((level) => level.height)),
+    ).sort((a, b) => b - a);
+
+    return {
+      heights,
+      levels,
+      options: [autoQuality, ...heights],
+    };
+  }
+
+  function selectHlsQuality(
+    hls: HlsInstance,
+    levels: ReturnType<typeof getHlsQualityOptions>["levels"],
+    quality: number,
+  ) {
+    if (quality === autoQuality) {
+      hls.currentLevel = -1;
+      return;
+    }
+
+    const matchingLevel = levels.find((level) => level.height === quality);
+    if (matchingLevel) hls.currentLevel = matchingLevel.index;
+  }
+
+  async function initMuxPlyrPlayers() {
+    const videos = Array.from(
+      document.querySelectorAll<MuxPlyrVideo>("video[data-mux-plyr]"),
+    ).filter((video) => !video.muxPlyr && video.dataset.playbackId?.trim());
+
+    if (!videos.length) return;
+
+    const { Hls, Plyr } = await loadMuxPlyrModules();
+
+    videos.forEach((video) => {
+      const playbackId = video.dataset.playbackId?.trim();
+      if (!playbackId) return;
+
+      const src = getMuxPlaybackUrl(playbackId);
+      let hls: HlsInstance | null = null;
+
+      if (Hls.isSupported()) {
+        hls = new Hls();
+        video.muxPlyr = {
+          hls,
+          player: null,
+        };
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          if (!hls || video.muxPlyr?.hls !== hls) return;
+
+          const qualityOptions = getHlsQualityOptions(hls);
+          video.removeAttribute("controls");
+          video.muxPlyr.player = new Plyr(video, {
+            ratio: "16:9",
+            settings: ["quality", "speed"],
+            quality: {
+              default: autoQuality,
+              forced: true,
+              options: qualityOptions.options,
+              onChange: (quality: number) => {
+                if (!hls) return;
+                selectHlsQuality(hls, qualityOptions.levels, quality);
+              },
+            },
+            i18n: {
+              qualityLabel: {
+                [autoQuality]: "Auto",
+              },
+            },
+          });
+        });
+        hls.loadSource(src);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = src;
+        video.removeAttribute("controls");
+        video.muxPlyr = {
+          hls,
+          player: new Plyr(video, {
+            ratio: "16:9",
+            settings: ["speed"],
+          }),
+        };
+      }
+    });
+  }
+
+  function destroyMuxPlyrPlayers() {
+    document
+      .querySelectorAll<MuxPlyrVideo>("video[data-mux-plyr]")
+      .forEach((video) => {
+        video.muxPlyr?.hls?.destroy();
+        video.muxPlyr?.player?.destroy();
+        delete video.muxPlyr;
+      });
+  }
+
+  document.addEventListener("astro:page-load", initMuxPlyrPlayers);
+  document.addEventListener("astro:before-swap", destroyMuxPlyrPlayers);
+  initMuxPlyrPlayers();
+</script>

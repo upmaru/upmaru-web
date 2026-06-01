@@ -1,38 +1,17 @@
-function extractYouTubeVideoId(input: string): string | null {
+const MUX_PLAYBACK_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
+
+export function normalizeMuxPlaybackId(input: string): string | null {
   const value = input.trim();
   if (!value) return null;
+  if (!MUX_PLAYBACK_ID_PATTERN.test(value)) return null;
 
-  try {
-    const url = new URL(value);
-    const host = url.hostname.toLowerCase();
-
-    if (host === "youtu.be") {
-      return url.pathname.split("/").filter(Boolean)[0] ?? null;
-    }
-
-    if (host === "youtube.com" || host === "www.youtube.com" || host === "m.youtube.com") {
-      if (url.pathname === "/watch") {
-        return url.searchParams.get("v");
-      }
-
-      if (url.pathname.startsWith("/embed/")) {
-        return url.pathname.split("/")[2] ?? null;
-      }
-
-      if (url.pathname.startsWith("/shorts/")) {
-        return url.pathname.split("/")[2] ?? null;
-      }
-    }
-  } catch {
-    if (/^[A-Za-z0-9_-]{11}$/.test(value)) return value;
-    return null;
-  }
-
-  return null;
+  return value;
 }
 
-export function toYouTubeEmbedUrl(input: string): string | null {
-  const videoId = extractYouTubeVideoId(input);
-  if (!videoId) return null;
-  return `https://www.youtube.com/embed/${videoId}`;
+export function getMuxPlaybackUrl(playbackId: string): string {
+  return `https://stream.mux.com/${encodeURIComponent(playbackId)}.m3u8`;
+}
+
+export function getMuxPosterUrl(playbackId: string): string {
+  return `https://image.mux.com/${encodeURIComponent(playbackId)}/thumbnail.webp?time=0`;
 }

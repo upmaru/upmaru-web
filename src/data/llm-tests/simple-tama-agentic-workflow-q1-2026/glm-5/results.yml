@@ -1,5 +1,5 @@
 suite: GLM 5
-youtube: https://www.youtube.com/watch?v=2FLnZB3nXS8
+playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=2FLnZB3nXS8
 inference_provider: Fireworks AI
 turns:
   - turn: 1

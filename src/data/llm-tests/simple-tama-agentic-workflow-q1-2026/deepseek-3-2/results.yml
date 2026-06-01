@@ -1,5 +1,5 @@
 suite: DeepSeek 3.2
-youtube:
+playback_id:
 inference_provider: Fireworks AI
 turns:
   - turn: 1

@@ -1,5 +1,5 @@
 suite: GPT 5 Mini
-youtube: https://www.youtube.com/watch?v=_5cLSZjcg-A
+playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=_5cLSZjcg-A
 inference_provider: OpenAI
 turns:
   - turn: 1

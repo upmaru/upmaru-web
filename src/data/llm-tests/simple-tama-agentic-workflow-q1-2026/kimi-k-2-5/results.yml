@@ -1,5 +1,5 @@
 suite: Kimi K2.5
-youtube: https://www.youtube.com/watch?v=EGEjfCRxYIw
+playback_id: ll65prUe8mtQ0101UABsuXcgGKEB8tq38untFEiKo4RlA
 inference_provider: Fireworks AI
 turns:
   - turn: 1
