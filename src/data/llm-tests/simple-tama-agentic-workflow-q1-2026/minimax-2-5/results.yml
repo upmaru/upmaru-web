@@ -1,5 +1,5 @@
 suite: Minimax 2.5
-playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=OjQv7XLkxMU
+playback_id: 6usO3P7Or9sVkGAh012DFnJWiDHXeYOnJ6k6GYTZoO4M
 inference_provider: Fireworks AI
 turns:
   - turn: 1
