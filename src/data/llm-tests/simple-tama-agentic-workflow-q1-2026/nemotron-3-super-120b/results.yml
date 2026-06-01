@@ -1,5 +1,5 @@
 suite: Nemotron 3 Super 120b
-playback_id: # TODO: add Mux playback ID for https://www.youtube.com/watch?v=5CES0NUNK4I
+playback_id: TiGmfqPoeIV7nQSqLh5Pc5020201jvtH199Y2xwF7H7tbA
 inference_provider: Nebius
 turns:
   - turn: 1
